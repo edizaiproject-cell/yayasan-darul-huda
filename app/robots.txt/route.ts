@@ -1,0 +1,1 @@
+export function GET(){return new Response('User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nSitemap: '+(process.env.SITE_URL||'http://localhost:5174')+'/sitemap.xml',{headers:{'Content-Type':'text/plain'}})}

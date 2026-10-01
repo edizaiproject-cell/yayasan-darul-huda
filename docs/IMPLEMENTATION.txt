@@ -1,0 +1,51 @@
+LAPORAN IMPLEMENTASI DARUL HUDA
+30 September 2026 — lingkungan lokal Windows
+
+HASIL
+Website publik dan CMS berjalan menggunakan React/TypeScript/Vinext, backend Node, dan SQLite nyata di folder D:\Dokumen\ChatGPT\Website Darul Huda Pyk. Port utama 5174. Proyek asal D:\Codex\donasi-laili pada port 5173 tidak diubah. Tidak ada data, .env, sesi, database, atau repository lama yang disalin.
+
+PENGGUNAAN ULANG
+Audit proyek lama selesai sebelum pembangunan. Fondasi dependency/configuration, komponen Button/ButtonLink dan utilitas kriptografi disalin secara selektif. Arsitektur React/App Router dipertahankan. Backend D1/R2 diganti dengan database/file lokal terpisah untuk kebutuhan ini. Hash password baru diperkuat menjadi 600.000 iterasi. CSS, layout pendidikan, schema CMS, API dan formulir dibuat khusus Darul Huda; modul affiliate, donor akun publik dan gateway lama tidak dibawa.
+
+MODUL
+Publik: beranda/hero dinamis, profil/sejarah/visi-misi/organisasi, tujuh unit pendidikan dan detail, program unggulan, kurikulum, usaha, berita/kategori/detail, galeri album/lightbox, pustaka/filter/unduhan, informasi/pendaftaran/pengumuman/agenda/kalender, donasi/detail/perkembangan/rekening, kontak, sitemap, metadata dan 404.
+Admin: dashboard, formulir semua modul, rich text, foto/dokumentasi, upload nyata, media reuse, drag/panah urutan, status publikasi/jadwal/arsip, pencarian/filter/urutan/paginasi daftar konten, menu/footer/pengaturan, pengguna/peran/permission, audit, ganti password, peringatan perubahan belum tersimpan.
+Keuangan: total dari transaksi valid; target opsional; koreksi beralasan; void tanpa hard-delete; validasi saldo; audit atomik; bukti privat; rekening global/khusus; template WhatsApp setelah nomor dilengkapi.
+
+DATA SUMBER
+14 gambar Word diekstraksi beserta hubungan letaknya. Logo, foto gedung, struktur organisasi, foto unit dan usaha digunakan. Aset besar disediakan dalam WebP. Seed berisi profil, tujuh unit, tiga kurikulum, empat usaha, delapan kategori berita, sembilan program donasi, tiga rekening, satu album unit pendidikan, serta pengaturan/hero/menu. Tidak ada berita, donatur, transaksi atau target rekaan.
+
+DATABASE DAN ENVIRONMENT
+SQLite: data/darul-huda.sqlite. Schema dalam migrations/001_initial.sql dan diinisialisasi idempotently oleh lib/database.ts. Seeder scripts/setup.ts mempertahankan data yang sudah ada. .env.example tersedia. .env, database, private proofs, uploads dan build diabaikan Git. Sesi memiliki masa berlaku dan hash token. Bukti privat hanya melalui endpoint terotorisasi.
+
+PWA
+Manifest standalone, ikon 192/512/maskable, SW, offline fallback, waktu salinan WIB, install prompt jika browser mendukung, serta update manual yang menghormati formulir belum tersimpan. Aset cache-first; halaman publik aman network-first; donasi/informasi penting tidak disimpan sebagai halaman cache; admin/API tidak diintersepsi. Cache hanya dibersihkan untuk namespace Darul Huda.
+Pemasangan aplikasi ke OS tidak dilakukan. Manifest, ikon, SW aktif dan perilaku offline telah diverifikasi.
+
+PENGUJIAN
+- npm run typecheck: PASS.
+- npm test: 15 pengujian PASS. Mencakup hash/sesi, CSRF/origin, draft/schedule, sanitasi, CRUD modul, transaksi/koreksi/void, foreign keys, permission publikasi, upload MIME, referensi media, bukti privat, throttling/logout, manifest dan cache.
+- npm run build: PASS. Vinext memberi catatan klasifikasi statis /admin sebagai Unknown; ini bukan kegagalan build.
+- npm run test:production: PASS. Server uji 5176 dengan database sementara; aset CSS/JS/gambar, upload baru sesudah build, Secure cookie, password awal wajib diganti, private no-store, 404 dan manifest diuji.
+- Browser: login, penyimpanan draft berita, salin rekening, menu mobile, buka/pindah/tutup lightbox berhasil. Draft uji dibersihkan dari daftar aktif.
+- Responsif: 180 kombinasi valid = 15 halaman publik x 12 lebar (320/360/375/390/412/430/768/1024/1280/1366/1440/1920), tanpa overflow. Detail pengukuran: docs/responsive-results.json. Dashboard dan formulir berita juga diperiksa pada ukuran mobile/desktop.
+- Offline produksi: setelah server uji dihentikan, profil yang telah dibuka tetap terbaca dengan timestamp; donasi menampilkan fallback offline.
+
+ERROR YANG DIPERBAIKI
+1. Ukuran hasil ikon tidak sesuai manifest: generator diubah memakai kanvas dengan ukuran pasti.
+2. Aset 404 pada produksi Windows: cache statis Vinext memakai pemisah path Windows; scripts/start.mjs memakai static handler filesystem Vinext pada allowlist aset.
+3. Unggahan baru tidak ada di folder hasil build: route /uploads/{file} mengambil media publik runtime dari penyimpanan aktual.
+4. Hot reload CommonJS pada library server: sharp dan sanitize-html ditetapkan sebagai serverExternalPackages.
+5. Header admin produksi tidak memuat no-store: dipastikan di skrip server selain konfigurasi route.
+6. Status khusus donasi berpotensi dipakai pada modul berita: setiap modul kini mempunyai allowlist status, dengan pengujian anti-bypass permission publikasi.
+
+KELENGKAPAN DATA DAN BATAS
+WhatsApp admin donasi, sosial media, pin Maps resmi, rincian pendaftaran, target/tanggal/foto program donasi, artikel/berita aktual, agenda dan buku PDF belum ada atau belum lengkap di sumber. Field kosong; fungsi terkait dapat diaktifkan setelah admin mengisinya. Kalender/pendaftaran tidak dibuat dengan angka atau tanggal contoh. Maps membuka pencarian alamat sumber. Nomor (0752)97601 tetap diperlakukan sebagai telepon, bukan WhatsApp.
+Autosave latar belakang belum diterapkan; ada peringatan perubahan belum disimpan. Payment gateway/QRIS otomatis tidak diimplementasikan sesuai tahap awal transfer manual. Belum ada deployment internet, pengujian perangkat iOS/Android fisik, atau pemasangan PWA ke OS. Foto sumber sebagian beresolusi rendah; tidak diganti dengan foto lembaga lain.
+
+CARA MENJALANKAN DAN DEPLOYMENT
+Development: npm run dev.
+Produksi: npm run build lalu npm start.
+Setup awal: npm ci, salin .env.example ke .env, npm run assets, npm run setup.
+Buka http://localhost:5174/admin, akun admin@darulhuda.local, password development diberikan dalam percakapan. Password awal wajib diganti sebelum mengelola build produksi.
+Deployment yang sesuai: satu server Node 24 dengan disk persisten, reverse proxy HTTPS, backup SQLite/unggahan, SITE_URL domain resmi. Multi-instance memerlukan database/media bersama. Panduan lengkap dan daftar route/API: README.md.

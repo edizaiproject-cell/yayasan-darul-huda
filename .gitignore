@@ -1,0 +1,11 @@
+node_modules/
+.env
+.env.local
+data/
+dist/
+.vinext/
+.next/
+*.tsbuildinfo
+public/uploads/
+test-results/
+.npm-cache/

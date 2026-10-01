@@ -1,0 +1,1262 @@
+[
+  {
+    "path": "/",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/pendidikan",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/pendidikan",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/pendidikan",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/pendidikan",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/pendidikan",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/pendidikan",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/pendidikan",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/pendidikan",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/pendidikan",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/pendidikan",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/pendidikan",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/pendidikan",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/pendidikan/sd-islam-al-kuttab",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/pendidikan/sd-islam-al-kuttab",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/pendidikan/sd-islam-al-kuttab",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/pendidikan/sd-islam-al-kuttab",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/pendidikan/sd-islam-al-kuttab",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/pendidikan/sd-islam-al-kuttab",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/pendidikan/sd-islam-al-kuttab",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/pendidikan/sd-islam-al-kuttab",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/pendidikan/sd-islam-al-kuttab",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/pendidikan/sd-islam-al-kuttab",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/pendidikan/sd-islam-al-kuttab",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/pendidikan/sd-islam-al-kuttab",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/profil/visi-misi",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/profil/visi-misi",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/profil/visi-misi",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/profil/visi-misi",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/profil/visi-misi",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/profil/visi-misi",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/profil/visi-misi",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/profil/visi-misi",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/profil/visi-misi",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/profil/visi-misi",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/profil/visi-misi",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/profil/visi-misi",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/profil/struktur-organisasi",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/profil/struktur-organisasi",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/profil/struktur-organisasi",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/profil/struktur-organisasi",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/profil/struktur-organisasi",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/profil/struktur-organisasi",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/profil/struktur-organisasi",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/profil/struktur-organisasi",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/profil/struktur-organisasi",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/profil/struktur-organisasi",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/profil/struktur-organisasi",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/profil/struktur-organisasi",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/galeri",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/galeri",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/galeri",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/galeri",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/galeri",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/galeri",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/galeri",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/galeri",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/galeri",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/galeri",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/galeri",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/galeri",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/galeri/unit-pendidikan-darul-huda",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/galeri/unit-pendidikan-darul-huda",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/galeri/unit-pendidikan-darul-huda",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/galeri/unit-pendidikan-darul-huda",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/galeri/unit-pendidikan-darul-huda",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/galeri/unit-pendidikan-darul-huda",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/galeri/unit-pendidikan-darul-huda",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/galeri/unit-pendidikan-darul-huda",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/galeri/unit-pendidikan-darul-huda",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/galeri/unit-pendidikan-darul-huda",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/galeri/unit-pendidikan-darul-huda",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/galeri/unit-pendidikan-darul-huda",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/donasi",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/donasi",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/donasi",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/donasi",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/donasi",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/donasi",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/donasi",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/donasi",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/donasi",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/donasi",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/donasi",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/donasi",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/donasi/pembangunan-asrama",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/donasi/pembangunan-asrama",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/donasi/pembangunan-asrama",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/donasi/pembangunan-asrama",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/donasi/pembangunan-asrama",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/donasi/pembangunan-asrama",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/donasi/pembangunan-asrama",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/donasi/pembangunan-asrama",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/donasi/pembangunan-asrama",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/donasi/pembangunan-asrama",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/donasi/pembangunan-asrama",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/donasi/pembangunan-asrama",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/berita",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/berita",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/berita",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/berita",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/berita",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/berita",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/berita",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/berita",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/berita",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/berita",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/berita",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/berita",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/pustaka",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/pustaka",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/pustaka",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/pustaka",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/pustaka",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/pustaka",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/pustaka",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/pustaka",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/pustaka",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/pustaka",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/pustaka",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/pustaka",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/informasi",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/informasi",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/informasi",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/informasi",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/informasi",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/informasi",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/informasi",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/informasi",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/informasi",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/informasi",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/informasi",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/informasi",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/akademik",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/akademik",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/akademik",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/akademik",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/akademik",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/akademik",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/akademik",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/akademik",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/akademik",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/akademik",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/akademik",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/akademik",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/usaha",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/usaha",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/usaha",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/usaha",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/usaha",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/usaha",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/usaha",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/usaha",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/usaha",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/usaha",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/usaha",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/usaha",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  },
+  {
+    "path": "/kontak",
+    "requested": 320,
+    "client": 305,
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "path": "/kontak",
+    "requested": 360,
+    "client": 345,
+    "scroll": 345,
+    "width": 360
+  },
+  {
+    "path": "/kontak",
+    "requested": 375,
+    "client": 360,
+    "scroll": 360,
+    "width": 375
+  },
+  {
+    "path": "/kontak",
+    "requested": 390,
+    "client": 375,
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "path": "/kontak",
+    "requested": 412,
+    "client": 397,
+    "scroll": 397,
+    "width": 412
+  },
+  {
+    "path": "/kontak",
+    "requested": 430,
+    "client": 415,
+    "scroll": 415,
+    "width": 430
+  },
+  {
+    "path": "/kontak",
+    "requested": 768,
+    "client": 753,
+    "scroll": 753,
+    "width": 768
+  },
+  {
+    "path": "/kontak",
+    "requested": 1024,
+    "client": 1009,
+    "scroll": 1009,
+    "width": 1024
+  },
+  {
+    "path": "/kontak",
+    "requested": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "width": 1280
+  },
+  {
+    "path": "/kontak",
+    "requested": 1366,
+    "client": 1351,
+    "scroll": 1351,
+    "width": 1366
+  },
+  {
+    "path": "/kontak",
+    "requested": 1440,
+    "client": 1425,
+    "scroll": 1425,
+    "width": 1440
+  },
+  {
+    "path": "/kontak",
+    "requested": 1920,
+    "client": 1905,
+    "scroll": 1905,
+    "width": 1920
+  }
+]

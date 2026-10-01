@@ -1,0 +1,47 @@
+[
+  {
+    "bottomGap": 25.199970245361328,
+    "centerError": 0,
+    "controlWidth": 272.8000183105469,
+    "ctaClear": true,
+    "heroHeight": 584.7999877929688,
+    "overflow": false,
+    "width": 320
+  },
+  {
+    "bottomGap": 25.19999313354492,
+    "centerError": 0.000003814697265625,
+    "controlWidth": 275.6000061035156,
+    "ctaClear": true,
+    "heroHeight": 560.75,
+    "overflow": false,
+    "width": 390
+  },
+  {
+    "bottomGap": 26.399974822998047,
+    "centerError": 0.0000152587890625,
+    "controlWidth": 285.6000061035156,
+    "ctaClear": true,
+    "heroHeight": 540,
+    "overflow": false,
+    "width": 768
+  },
+  {
+    "bottomGap": 26.399978637695312,
+    "centerError": 0.0000152587890625,
+    "controlWidth": 285.6000061035156,
+    "ctaClear": true,
+    "heroHeight": 570,
+    "overflow": false,
+    "width": 1024
+  },
+  {
+    "bottomGap": 23.99997329711914,
+    "centerError": 0.0000152587890625,
+    "controlWidth": 241.6000061035156,
+    "ctaClear": true,
+    "heroHeight": 622.2000122070312,
+    "overflow": false,
+    "width": 1440
+  }
+]
