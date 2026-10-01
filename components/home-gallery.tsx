@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import {useState, type CSSProperties} from 'react';
-import {type AppearanceRow as Row} from '../lib/appearance';
+import {type HomeGalleryPhoto} from '../lib/home-gallery';
 import {imagePosition, imageVariant} from '../lib/media-presets';
 
 function thumbnail(image:string){
@@ -14,7 +14,7 @@ function thumbnail(image:string){
 }
 
 /** Repeated cards are presentation only; the first set supplies keyboard links. */
-export function HomeGallery({items}:{items:Row[]}){
+export function HomeGallery({items}:{items:HomeGalleryPhoto[]}){
  const [paused,setPaused]=useState(false);
  if(!items.length)return <p className="muted">Belum ada konten yang sesuai untuk bagian ini.</p>;
  const repeats=Math.max(1,Math.ceil(12/items.length));
@@ -25,7 +25,7 @@ export function HomeGallery({items}:{items:Row[]}){
     {[0,1].map(group=><div className="home-gallery-group" key={group} aria-hidden={group===1?true:undefined}>
      {cards.map((item,index)=>{
       const duplicate=group===1||index>=items.length;
-      return <Link key={`${item.id}-${index}`} className={'home-gallery-card'+(duplicate?' is-copy':'')} href={'/galeri/'+item.slug} tabIndex={duplicate?-1:undefined} aria-hidden={duplicate?true:undefined}>
+      return <Link key={`${item.id}-${index}`} className={'home-gallery-card'+(duplicate?' is-copy':'')} href={item.href} tabIndex={duplicate?-1:undefined} aria-hidden={duplicate?true:undefined}>
        {item.image?<img src={thumbnail(item.image)} alt={item.alt||item.title} style={{objectPosition:imagePosition(item.image)}} width={240} height={280} loading="lazy" decoding="async"/>:<span className="home-gallery-placeholder">Darul Huda</span>}
        <span className="home-gallery-caption">{item.category&&<small>{item.category}</small>}<strong>{item.title}</strong></span>
       </Link>;

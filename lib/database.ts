@@ -1,3 +1,5 @@
+import {validateContactSettings} from './contact.ts';
+import {visibleEducationMenu} from './education-navigation.ts';
 import {isAppearance,appearanceDefaults,validateAppearance,validateAppearanceCollection} from './appearance.ts';
 import {contentSchema,contentDefaults,validateContent,publicLibrary} from './content-schema.ts';
 import {isInstitution,institutionDefaults,validateInstitution} from './institution-schema.ts';
@@ -78,6 +80,7 @@ export function publicData(){
  const hiddenPageLinks=new Set(result.pages.filter((r:RecordData)=>r.showMenu===false).map((r:RecordData)=>'/profil/'+r.slug));
  result.menu_items=result.menu_items.filter((r:RecordData)=>!hiddenPageLinks.has(r.url));
  const footerSettings=records('footer_links',true).find(r=>r.kind==='settings');result.appearanceContactVisible=footerSettings?footerSettings.status==='published'&&footerSettings.showContact!==false:true;
+ result.menu_items=visibleEducationMenu(result.menu_items,result.education_units);
  result.appearanceManaged=Object.fromEntries(['home_sections','footer_links','menu_items'].map(name=>[name,!!db.prepare(`SELECT 1 FROM ${name} WHERE json_extract(data,'$.managed')=1 LIMIT 1`).get()]));
  result.updatedAt=new Date().toISOString();
  return result;
@@ -112,6 +115,7 @@ export function saveRecord(name:string,input:any,actor:string):RecordData {
  if(isInstitution(name))validateInstitution(name,{...data,status});
  if(isAppearance(name)){validateAppearance(name,{...data,title,status});if(name==='hero_slides')for(const k of ['primary','secondary'])if(data[k+'Type']==='none'){data[k+'Url']='';data[k+'Text']='';}}
  if(name==='education_units'&&data.curriculumId&&!db.prepare('SELECT id FROM academics WHERE id=? AND deleted_at IS NULL').get(data.curriculumId))fail('Kurikulum tidak tersedia.');
+ if(name==='site_settings')validateContactSettings(data);
  if(contentSchema[name])validateContent(name,{...data,status});
  if(name==='posts'&&data.authorId){const author=db.prepare('SELECT name FROM users WHERE id=? AND active=1').get(data.authorId) as any;if(!author)fail('Penulis terdaftar tidak tersedia.');data.author=author.name;}
  if(name==='academics'){if(data.year.length>80)fail('Tahun kurikulum maksimal 80 karakter.');if(data.scheduleUrl&&!academicLink(data.scheduleUrl))fail('Tautan jadwal harus berupa HTTP, HTTPS, atau path lokal yang valid.');}
