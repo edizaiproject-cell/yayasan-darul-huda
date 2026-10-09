@@ -1,0 +1,6 @@
+.pdf-error-notice{position:fixed;bottom:22px;right:22px;z-index:1100;display:flex;align-items:center;flex-wrap:wrap;gap:12px;max-width:calc(100vw - 32px);padding:15px 18px;border:1px solid #edb4aa;border-radius:12px;background:#fff7f5;color:#822e24;box-shadow:0 8px 28px #183d3226;font-size:13px}
+.pdf-error-notice button{border:1px solid #d9aaa3;padding:7px 10px;border-radius:6px;background:white;color:inherit;cursor:pointer}
+.pdf-document-dialog{width:min(980px,calc(100vw - 28px))}.pdf-document-dialog iframe{height:65dvh;width:100%;border:1px solid #dce7df;background:#f2f5f3}.pdf-document-dialog .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.pdf-document-dialog p{overflow-wrap:anywhere}
+@media(max-width:640px){.pdf-document-dialog{padding:14px}.pdf-document-dialog iframe{height:58dvh}.pdf-error-notice{bottom:12px;right:12px}.pdf-document-dialog .actions button{min-height:42px}}
+
+.pdf-canvas-pages{display:grid;gap:16px;background:#e9eeeb;padding:12px}.pdf-canvas-pages canvas{display:block;width:100%;height:auto;background:white;box-shadow:0 2px 8px #183d3220}.pdf-document-dialog .pdf-print-frame{position:fixed;width:1px;height:1px;left:-10000px;border:0}

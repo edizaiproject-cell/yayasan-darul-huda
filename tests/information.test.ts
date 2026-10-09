@@ -29,7 +29,7 @@ test('announcement windows use WIB, until-revoked overrides expiry, and target u
  assert.equal(informationVisible('announcements',r,Date.parse('2026-10-01T01:00Z')),true);
  assert.equal(informationVisible('announcements',r,Date.parse('2026-10-01T02:00Z')),false);
  assert.equal(informationVisible('announcements',{...r,untilRevoked:true},Date.parse('2026-10-02T02:00Z')),true);
- assert.throws(()=>save('announcements',{title:'Tidak valid',untilRevoked:false}),/berakhir/);
+ assert.equal(save('announcements',{title:'Draft tanpa akhir',status:'draft',untilRevoked:false}).status,'draft');assert.throws(()=>save('announcements',{title:'Tidak valid',status:'published',untilRevoked:false}),/berakhir/);
  assert.throws(()=>save('announcements',{title:'Unit hilang',audience:'Unit tertentu',unitId:'missing'}),/Unit pendidikan/);
  const unit=save('education_units',{title:'Madrasah',status:'published'});const news=save('announcements',{title:'Informasi untuk unit',status:'published',audience:'Unit tertentu',unitId:unit.id,pinned:true});
  assert.equal(d.publicData().announcements.find((r:any)=>r.id===news.id).unitTitle,'Madrasah');

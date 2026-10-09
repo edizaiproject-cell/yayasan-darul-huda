@@ -1,0 +1,26 @@
+[Unit]
+Description=Darul Huda website
+After=network.target
+
+[Service]
+Type=simple
+User=darulhuda
+Group=darulhuda
+WorkingDirectory=/srv/darul-huda/current
+EnvironmentFile=/etc/darul-huda/production.env
+# Verify the actual installation path of Node 24.x.
+ExecStart=/usr/bin/node scripts/start.mjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/srv/darul-huda/shared
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,5 @@
+{"normalKeyBlocked":true,"whitespaceKeyBypass":true}
+{"proxyTrusted":false,"status":403,"body":{"error":"Permintaan lintas situs ditolak."}}
+{"proxyTrusted":true,"status":401,"body":{"error":"Silakan masuk terlebih dahulu."}}
+{"zipDatabaseIntegrity":[{"integrity_check":"ok"}],"foreignKeyViolations":0,"tables":42,"accounts":1,"activeAccounts":1,"activeAccountsRequiringPasswordChange":0}
+{"vulnerabilityCounts":{"info":0,"low":0,"moderate":0,"high":6,"critical":0,"total":6},"packages":["braces","fast-glob","micromatch","vinext","vite-plugin-commonjs","vite-plugin-dynamic-import"]}

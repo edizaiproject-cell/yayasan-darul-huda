@@ -1,15 +1,18 @@
+import {sqlSort} from './list-sort.ts';
+import {searchTokens,searchPattern,dateSearchSql} from './list-search.ts';
 import {db,atomic,audit} from './database.ts';
 import {donorPhone} from './donation-workflow-shared.ts';
 import {donationQuery} from './donation-service.ts';
 export const donorCategories=['Donatur Tetap','Donatur Tidak Tetap'];
 const profileFields=['address','city','province','occupation','institution','email','notes','description'];
 function fail(message:string,status=400):never{throw Object.assign(new Error(message),{status});}
-const aggregate=`WITH stats AS (SELECT donor_id, SUM(CASE WHEN status='valid' THEN CAST(json_extract(data,'$.amount') AS INTEGER) ELSE 0 END) total, SUM(CASE WHEN status='valid' THEN 1 ELSE 0 END) transactions,MAX(COALESCE(NULLIF(json_extract(data,'$.date'),''),substr(created_at,1,10))) last_donation FROM donation_transactions WHERE deleted_at IS NULL GROUP BY donor_id), master AS (SELECT d.*,COALESCE(s.total,0) total,COALESCE(s.transactions,0) transactions,s.last_donation FROM donors d LEFT JOIN stats s ON s.donor_id=d.id WHERE d.merged_into IS NULL)`;
+const aggregate=`WITH stats AS (SELECT donor_id, SUM(CASE WHEN status='valid' THEN CAST(json_extract(data,'$.amount') AS INTEGER) ELSE 0 END) total, SUM(CASE WHEN status='valid' THEN 1 ELSE 0 END) transactions,MAX(COALESCE(NULLIF(json_extract(data,'$.date'),''),substr(created_at,1,10))) last_donation FROM donation_transactions WHERE deleted_at IS NULL GROUP BY donor_id), master AS (SELECT d.*,COALESCE(s.total,0) total,COALESCE(s.transactions,0) transactions,s.last_donation FROM donors d LEFT JOIN stats s ON s.donor_id=d.id WHERE d.merged_into IS NULL AND d.deleted_at IS NULL)`;
 export function supportedPrograms(id:string){return db.prepare(`SELECT COALESCE(p.id,'general') id,COALESCE(p.title,'Donasi Umum') title,COALESCE(NULLIF(json_extract(p.data,'$.category'),''),'Belum dikategorikan') category,SUM(CASE WHEN t.status='valid' THEN CAST(json_extract(t.data,'$.amount') AS INTEGER) ELSE 0 END) total FROM donation_transactions t LEFT JOIN donation_programs p ON p.id=t.program_id WHERE t.donor_id=? AND t.deleted_at IS NULL GROUP BY COALESCE(p.id,'general') ORDER BY total DESC,title`).all(id);}
 function unpack(row:any){return {...row,...JSON.parse(row.profile),programs:supportedPrograms(row.id)};}
 export function donorQuery(q:URLSearchParams,all=false){
  const where=['1=1'],args:any[]=[],labels:string[]=[];
  const add=(sql:string,value:any,label:string)=>{where.push(sql);args.push(value);labels.push(label+': '+value);};
+ if(q.get('q')){for(const term of searchTokens(q.get('q')!)){where.push(`(COALESCE(d.name,'') || ' ' || COALESCE(d.phone,'') || ' ' || d.category || ' ' || d.profile || ' ' || d.total || ' ' || ${dateSearchSql('d.created_at')} || ' ' || COALESCE((SELECT group_concat(ph.phone,' ') FROM donor_phones ph WHERE ph.donor_id=d.id),'') || ' ' || COALESCE((SELECT group_concat(p.title,' ') FROM donation_transactions t LEFT JOIN donation_programs p ON p.id=t.program_id WHERE t.donor_id=d.id AND t.deleted_at IS NULL),'')) LIKE ? ESCAPE '\\'`);args.push(searchPattern(term));}labels.push('Pencarian: '+q.get('q'));}
  for(const [key,col,label] of [['name','name','Nama'],['category','category','Kategori Donatur'],['source','source','Sumber']])if(q.get(key))add(`d.${col} ${key==='name'?'LIKE':'='} ?`,key==='name'?'%'+q.get(key)+'%':q.get(key),label);
  if(q.get('phone')){let phone=q.get('phone')!.replace(/\D/g,'');if(phone.startsWith('62'))phone='0'+phone.slice(2);add('EXISTS(SELECT 1 FROM donor_phones ph WHERE ph.donor_id=d.id AND ph.phone LIKE ?)','%'+phone+'%','Telepon');}
  for(const [key,col,op,label] of [['registered_from','substr(d.created_at,1,10)','>=','Terdaftar mulai'],['registered_to','substr(d.created_at,1,10)','<=','Terdaftar sampai'],['min','d.total','>=','Minimum'],['max','d.total','<=','Maksimum']])if(q.get(key)){const value=key==='min'||key==='max'?Number(q.get(key)):q.get(key);if(typeof value==='number'&&(!Number.isFinite(value)||value<0))fail('Filter nominal tidak valid.');add(`${col}${op}?`,value,label);}
@@ -17,13 +20,14 @@ export function donorQuery(q:URLSearchParams,all=false){
  const tx=['t.donor_id=d.id','t.deleted_at IS NULL'];const txArgs:any[]=[];
  for(const [key,sql,label] of [['program',"COALESCE(t.program_id,'')=?",'Program'],['donation_category',"COALESCE(NULLIF(json_extract(p.data,'$.category'),''),'Belum dikategorikan')=?",'Kategori Donasi'],['from',"json_extract(t.data,'$.date')>=?",'Pernah donasi mulai'],['to',"json_extract(t.data,'$.date')<=?",'Pernah donasi sampai']])if(q.get(key)){const v=q.get(key)!;tx.push(sql);txArgs.push(v==='general'?'':v);const program=key==='program'?db.prepare('SELECT title FROM donation_programs WHERE id=?').get(v) as any:null;labels.push(label+': '+(program?.title||(v==='general'?'Donasi Umum':v)));}
  if(txArgs.length){where.push(`EXISTS(SELECT 1 FROM donation_transactions t LEFT JOIN donation_programs p ON p.id=t.program_id WHERE ${tx.join(' AND ')})`);args.push(...txArgs);}
+ if(q.has('ids')){const ids=[...new Set(q.get('ids')!.split(',').filter(Boolean))];if(!ids.length||ids.length>100)throw new Error('Pilih antara 1 dan 100 data.');where.push(`d.id IN (${ids.map(()=>'?').join(',')})`);args.push(...ids);labels.push(ids.length+' data dipilih');}
  const from=`FROM master d WHERE ${where.join(' AND ')}`;
  const summary=db.prepare(`${aggregate} SELECT COUNT(*) count,COALESCE(SUM(total),0) total,SUM(category='Donatur Tetap') regular,SUM(category='Donatur Tidak Tetap') occasional ${from}`).get(...args) as any;
  if(all&&summary.count>25000)fail('Persempit filter hingga maksimal 25.000 donatur.');
- const sorts:Record<string,string>={name:'name COLLATE NOCASE',created_at:'created_at',last_donation:'last_donation',total:'total'};
- const sort=sorts[q.get('sort')||'']||'created_at',direction=q.get('direction')==='asc'?'ASC':'DESC';
+ const sorts:Record<string,string>={name:'name COLLATE NOCASE',created_at:'created_at',last_donation:'last_donation',total:'total',category:'category COLLATE NOCASE',program:"(SELECT MIN(COALESCE(p.title,'Donasi Umum')) FROM donation_transactions t LEFT JOIN donation_programs p ON p.id=t.program_id WHERE t.donor_id=d.id AND t.deleted_at IS NULL) COLLATE NOCASE"};
+ const sort=sqlSort(q,sorts,'created_at DESC');
  const page=Math.max(1,Math.min(Math.ceil(summary.count/20)||1,Math.trunc(Number(q.get('page')))||1));
- const rows=db.prepare(`${aggregate} SELECT d.* ${from} ORDER BY ${sort} ${direction},id ${all?'':'LIMIT 20 OFFSET ?'}`).all(...args,...(all?[]:[(page-1)*20])).map(unpack);
+ const rows=db.prepare(`${aggregate} SELECT d.* ${from} ORDER BY ${sort},id ${all?'':'LIMIT 20 OFFSET ?'}`).all(...args,...(all?[]:[(page-1)*20])).map(unpack);
  return {...summary,rows,page,labels};
 }
 export function getDonor(id:string,q=new URLSearchParams()){

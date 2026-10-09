@@ -4,6 +4,7 @@ import {mkdtempSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {appearanceDefaults,appearanceRows,validateAppearanceCollection,validateAppearance,selectedSectionRows,destinationOptions} from '../lib/appearance.ts';
+import {moveAppearance,appearanceChanges,visibleHeroes,heroEffect,gallerySelection} from '../lib/appearance-builder.ts';
 process.env.DARUL_HUDA_DB=join(mkdtempSync(join(tmpdir(),'appearance-')),'test.sqlite');
 const d=await import('../lib/database.ts');
 const save=(name:string,r:any)=>d.saveRecord(name,r,'test');
@@ -43,3 +44,24 @@ test('footer contacts and socials reference central data and disabled contact st
 test('intentionally empty managed collections do not revive legacy defaults',()=>{
  d.saveAppearanceBatch('home_sections',[],expected('home_sections'),'test');assert.equal(d.publicData().appearanceManaged.home_sections,true);assert.deepEqual(d.publicData().home_sections,[]);
 });
+
+test('builder fields survive database saves and order-only saves preserve content drafts',()=>{
+ const hero=save('hero_slides',{title:'Builder Hero',image:'/media/image2.png',status:'published',description:'Deskripsi tambahan',transition:'split',duration:7,transitionSpeed:'slow',textPosition:'right'});
+ assert.equal(hero.transition,'split');assert.equal(hero.duration,7);assert.equal(hero.description,'Deskripsi tambahan');
+ const section=save('home_sections',{title:'Berita pilihan',section:'berita',status:'published',limit:8,showHeading:false,showDate:false,showExcerpt:false,columnsDesktop:4,columnsTablet:2,columnsMobile:1,width:'full',spacing:'tight',animation:'zoom',itemOrder:'popular'});
+ assert.equal(section.showHeading,false);assert.equal(section.showDate,false);assert.equal(section.columnsDesktop,4);assert.equal(section.width,'full');assert.equal(section.animation,'zoom');
+ const before=[{id:'a',title:'Awal'},{id:'b',title:'Kedua'}],draft=[{...before[0],title:'Draft'},before[1]],moved=moveAppearance(draft,'a','b');
+ assert.deepEqual(moved.map(r=>r.id),['b','a']);assert.equal(before[0].title,'Awal');assert.equal(appearanceChanges(before,moved),2);
+ const savedOrder=moved.map(r=>before.find(b=>b.id===r.id)!);assert.equal(savedOrder[1].title,'Awal');assert.equal(appearanceChanges(savedOrder,moved),1);
+ assert.throws(()=>save('hero_slides',{title:'Durasi salah',image:'/media/image2.png',duration:999}),/Durasi/);
+ assert.throws(()=>save('home_sections',{title:'Kolom salah',section:'cards',columnsDesktop:99}),/kolom/);
+});
+
+test('builder preview eligibility, custom types, ordering and album selections match settings',()=>{
+ const time=Date.parse('2026-10-04T00:00:00Z');assert.deepEqual(visibleHeroes([{id:'a',status:'published'},{id:'b',status:'draft'},{id:'c',status:'published',startsAt:'2099-01-01'},{id:'d',status:'published',endsAt:'2020-01-01'}],time).map(r=>r.id),['a']);
+ assert.equal(heroEffect('reveal',0),'diagonal');assert.equal(heroEffect('slide',0),'slide');assert.notEqual(heroEffect('random',0),heroEffect('random',1));
+ assert.doesNotThrow(()=>validateAppearanceCollection('home_sections',[{id:'1',section:'cards'},{id:'2',section:'cards'}]));
+ assert.deepEqual(selectedSectionRows({section:'berita',itemOrder:'popular',limit:2},{posts:[{id:'a',views:1},{id:'b',views:10},{id:'c',views:5}]}).map(r=>r.id),['b','c']);
+ assert.deepEqual(gallerySelection({albumId:'one',limit:1},[{id:'gallery-one-0'},{id:'gallery-two-0'},{id:'gallery-one-1'}]).map(r=>r.id),['gallery-one-0']);
+});
+

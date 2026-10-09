@@ -1,0 +1,59 @@
+
+/* Scope compact account management to its list and modal. */
+body dialog.floating-entry:has(.account-editor){width:940px;max-width:calc(100vw - 32px);padding:20px;overflow-x:hidden}
+body .account-editor .donation-editor-grid{grid-template-columns:minmax(0,1fr);gap:0;min-width:0}
+body .account-editor .donation-editor-grid>*{grid-column:1!important;min-width:0}
+body .account-editor .panel{padding:14px 0;margin:0;border:0;border-bottom:1px solid #e1e8e3;box-shadow:none;border-radius:0;background:transparent}
+body .account-editor h2{font-size:15px;margin:0 0 12px;line-height:1.4}
+body .account-editor .form-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px}
+body .account-editor label{font-size:12px;margin:0;gap:5px;line-height:1.5}
+body .account-editor input:not([type=checkbox]):not([type=radio]):not([type=file]),body .account-editor select{width:100%;min-width:0;height:40px;min-height:40px;margin:0;font-size:13px;padding:8px 10px}
+body .account-editor textarea{min-height:60px;height:60px;margin:0}
+body .account-editor .usage-mode legend,body .account-editor .usage-summary{display:none}
+body .account-editor .usage-options{display:flex;gap:8px;flex-wrap:wrap}
+body .account-editor .usage-options label{flex-direction:row;align-items:center;padding:9px 12px;min-height:40px;gap:8px}
+body .account-editor input[type=radio]{width:16px;height:16px;min-height:16px;padding:0;margin:0;flex:none;accent-color:#0f6b4f}
+body .account-editor .usage-mode-hint{font-size:12px;color:#64756c;margin:7px 0 12px}
+body .account-editor .usage-primary{margin:10px 0 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+body .account-editor .usage-primary label{display:flex;flex-direction:row-reverse;align-items:center;gap:18px}
+body .account-editor .usage-primary small{margin:0}
+body .account-editor .account-switch-label{display:flex;flex-direction:row;align-items:center;justify-content:space-between;align-self:end;min-height:40px;gap:16px}
+body .account-editor input.account-switch{appearance:none;width:38px;height:22px;min-height:22px;border:0;border-radius:20px;background:#a3b0a8;position:relative;padding:0;margin:0;cursor:pointer;flex:none}
+body .account-editor input.account-switch:before{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:white;transition:transform .15s}
+body .account-editor input.account-switch:checked{background:#0f6b4f}
+body .account-editor input.account-switch:checked:before{transform:translateX(16px)}
+body .account-editor input.account-switch:focus-visible{outline:2px solid #0f6b4f;outline-offset:3px}
+body .account-editor .usage-picker{margin-top:12px}
+body .account-editor .usage-results{max-height:150px}
+body .account-editor .usage-chips{margin-bottom:8px}
+body .account-editor .qr-mode{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px;padding:0;border:0}
+body .account-editor .qr-mode label{flex-direction:row;align-items:center;gap:8px;padding:9px 12px;border:1px solid #d7e2da;border-radius:8px;min-height:40px}
+body .account-editor .qr-mode label:has(input:checked){background:#edf5ef;border-color:#0f6b4f}
+body .account-editor .payment-qr-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+body .account-editor .payment-qr-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+body .account-editor .payment-qr-fields>label:has(textarea),body .account-editor .payment-qr-fields>.qr-check{grid-column:1/-1}
+body .account-editor .qr-check{flex-direction:row;align-items:center;gap:8px}
+body .account-editor .payment-qr-preview{padding:0;border:0;background:transparent;min-width:0}
+body .account-editor .payment-qr-preview>strong{font-size:12px;margin-bottom:8px;display:block}
+.compact-media{display:flex;gap:10px;align-items:center;min-width:0}.compact-media>img{width:48px;height:48px;object-fit:contain;border:1px solid #e2e8e3;border-radius:6px;flex:none}.compact-media-controls{min-width:0}.compact-media .actions{display:flex;gap:6px;flex-wrap:wrap;margin:0!important}.compact-media .actions button,.compact-media .upload-button{font-size:11px;padding:6px 9px;min-height:32px;margin:0!important;width:auto}.compact-media .upload-button{position:relative;overflow:hidden;cursor:pointer;border:1px solid #d7e2da;border-radius:6px;background:#fff}.compact-media .upload-button input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}.compact-media small{display:block;font-size:10px;line-height:1.5;color:#63746a;margin-top:5px}.account-logo-field>span{display:block;font-size:12px;margin-bottom:5px}.compact-qr-media{align-items:flex-start;flex-wrap:wrap}.compact-qr-media>img{width:120px;height:120px;border-radius:8px}.compact-qr-media .compact-media-controls{flex:1;min-width:130px}
+body .account-editor .account-advanced{margin:0;padding:0;font-size:12px}body .account-editor .account-advanced label{max-width:240px;margin-top:8px}
+body .account-editor .form-actions{position:sticky;bottom:-20px;z-index:2;display:flex;align-items:center;gap:12px;padding:12px 0;background:#fff;border-top:1px solid #dce6df;margin:0;box-shadow:none}
+body .account-editor .form-actions>span{flex:1;font-size:11px}body .account-editor .form-actions button{min-height:40px;font-size:12px;padding:8px 14px}
+.account-manager .donation-table{table-layout:fixed;width:100%;min-width:0}.account-manager .donation-table th:nth-child(2){width:10%}.account-manager .donation-table th:nth-child(3){width:19%}.account-manager .donation-table th:nth-child(4){width:17%}.account-manager .donation-table th:nth-child(5){width:16%}.account-manager .donation-table th:nth-child(6){width:8%}.account-manager .donation-table th:nth-child(7){width:8%}.account-manager .donation-table th:nth-child(8){width:8%}.account-manager .donation-table th:last-child{width:42px}.account-manager .donation-table th,.account-manager .donation-table td{padding:6px!important;font-size:11px}.account-manager .donation-table td{overflow:hidden}.account-bank{display:flex;align-items:center;gap:5px;min-width:0;border:0;background:transparent;padding:0!important;min-height:28px!important;text-align:left}.account-bank img{width:25px;height:25px;object-fit:contain;flex:none}.account-bank strong{font-size:12px;overflow:hidden;text-overflow:ellipsis}.account-number{display:flex;align-items:center;gap:3px;min-width:0;font-variant-numeric:tabular-nums;font-feature-settings:'tnum';white-space:nowrap;font-size:12px}.account-number>span{overflow:hidden;text-overflow:ellipsis;user-select:all}.account-number button{border:0;background:transparent;min-height:28px;width:24px;padding:0;flex:none;color:#0f6b4f}.account-usage-badge{display:inline-block;font-size:10px;background:#eef3ed;border-radius:5px;padding:3px 5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.account-manager .account-qr-button{font-size:11px;min-height:28px;height:28px;padding:3px 6px;white-space:nowrap}.account-manager td.list-secondary>span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.account-manager td.list-secondary>button{font-size:11px;padding:2px;min-height:28px;white-space:nowrap}.account-detail-facts{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px}.account-detail-facts div{min-width:0}.account-detail-facts dt{font-size:12px;color:#6b7c72}.account-detail-facts dd{margin:4px 0;font-size:14px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.account-detail-qr{width:120px;height:120px;object-fit:contain}.account-list-modal[aria-label='Detail Rekening Donasi']{width:940px;max-width:calc(100vw - 32px)}
+@media(max-width:767px){body dialog.floating-entry:has(.account-editor){width:100%;max-width:100%;max-height:96dvh;padding:16px}body .account-editor .form-grid,body .account-editor .payment-qr-grid{grid-template-columns:1fr}body .account-editor .form-actions{bottom:-16px;flex-wrap:wrap}body .account-editor .form-actions>span{order:3;flex:1 0 100%;text-align:center}body .account-editor .form-actions>button:last-child{margin-left:auto}.account-detail-facts{grid-template-columns:1fr}.account-manager .account-number{font-size:15px;margin:7px 0}.account-manager .account-number button{min-height:40px;width:40px}.account-manager .account-qr-button{min-height:40px}.account-list-modal[aria-label='Detail Rekening Donasi']{width:100%;max-width:100%;max-height:96dvh;margin:0;inset:auto 0 0;border-radius:16px 16px 0 0}}
+/* Override shared dialog form rules without changing other editors. */
+body dialog.floating-entry .account-editor .panel{padding:12px 0!important}
+body dialog.floating-entry .account-editor fieldset{padding:0!important;margin:0!important;min-width:0}
+body dialog.floating-entry .account-editor .form-grid{gap:10px 18px!important}
+body dialog.floating-entry .account-editor :is(h2,h3){margin:0 0 10px!important}
+body dialog.floating-entry .account-editor input[type=radio]{width:16px!important;height:16px!important;min-height:16px!important;padding:0!important;margin:0!important;flex:0 0 16px!important;appearance:auto;background:transparent;border:0}
+body dialog.floating-entry .account-editor :is(.usage-options,.qr-mode)>label{display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;padding:8px 12px!important;min-height:38px;width:auto;overflow-wrap:normal}
+body dialog.floating-entry .account-editor :is(.usage-options,.qr-mode)>label span{white-space:nowrap}
+body dialog.floating-entry .account-editor input:not([type=radio]):not([type=checkbox]):not([type=file]),body dialog.floating-entry .account-editor select{height:40px!important;min-height:40px!important;padding:8px 10px!important}
+body dialog.floating-entry .account-editor textarea{min-height:60px!important;height:60px!important;padding:8px 10px!important}
+body dialog.floating-entry .account-editor .upload-button{padding:6px 9px!important;min-height:32px!important;display:inline-flex;align-items:center}
+body dialog.floating-entry .account-editor .usage-primary>label{display:flex!important;flex-direction:row-reverse!important}
+body dialog.floating-entry .account-editor .account-switch-label{display:flex!important;flex-direction:row!important}
+body dialog.floating-entry .account-editor .qr-mode{display:flex!important;flex-wrap:wrap}
+body dialog.floating-entry .account-editor .form-actions{width:100%;left:auto;right:auto}
+body dialog.floating-entry .account-editor legend.sr-only{width:1px!important;height:1px!important;min-width:0!important;padding:0!important;margin:-1px!important}

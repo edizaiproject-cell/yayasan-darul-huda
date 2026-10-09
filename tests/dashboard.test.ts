@@ -9,7 +9,7 @@ const {dashboardSummary}=await import('../lib/dashboard-service.ts');
 const {donationQuery}=await import('../lib/donation-service.ts');
 const now=new Date('2026-09-30T18:00:00Z'); // Already October in Payakumbuh.
 const permissions=['posts.manage','gallery.manage','information.manage','appearance.manage','donations.manage','donations.transaction'];
-const save=(module:string,data:any)=>d.saveRecord(module,data,'test');
+const save=(module:string,data:any)=>d.saveRecord(module,{...(module==='posts'?{image:'/media/image2.png'}:{}),...data},'test');
 const program=save('donation_programs',{title:'Asrama',status:'active'});
 const tx=(amount:number,date:string,status='valid',phone='081363123456')=>save('donation_transactions',{title:crypto.randomUUID(),donor_name:'PRIVATE PERSON',donor_phone:phone,note:'PRIVATE NOTE',amount,date,status,kind:amount<0?'Koreksi':'Pemasukan',programId:program.id});
 test('financial summary uses Jakarta month, verified signed amounts and matching drill-down filters',()=>{

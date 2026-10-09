@@ -34,12 +34,12 @@ body:has(.pwa-banner) .floating-whatsapp{bottom:120px}
 body:has(.admin-layout) .pwa-banner{top:110px;bottom:auto;left:auto;right:16px;max-width:min(360px,calc(100vw - 32px))}
 /* Hero: stable overlapping slides and compact bottom-center controls. */
 .hero.hero-slider{height:auto;min-height:570px;isolation:isolate}
-.hero-slides{display:grid;min-height:inherit}.hero-slide{position:relative;grid-area:1/1;min-width:0;opacity:0;pointer-events:none;transition:opacity 750ms ease-in-out}.hero-slide.is-active{opacity:1;pointer-events:auto;z-index:1}
+.hero-slides{display:grid;min-height:inherit}.hero-slide{position:relative;grid-area:1/1;min-width:0;opacity:0;pointer-events:none;transition:opacity 1200ms ease-in-out}.hero-slide.is-active{opacity:1;pointer-events:auto;z-index:1}
 .hero-slider .hero-slide picture img{transform:scale(1.025);transition:transform 1400ms cubic-bezier(.2,.65,.3,1)}.hero-slider .hero-slide.is-active picture img{transform:scale(1)}
 .hero-slider .hero-content{height:auto;min-height:100%;padding-bottom:35px;overflow-wrap:anywhere}.hero-slider.has-controls .hero-content{padding-bottom:105px}
-.hero-slide .hero-content>p,.hero-slide .hero-content>h1,.hero-slide .hero-content>.actions,.hero-slide .hero-bottom{opacity:0;transform:translateY(10px);transition:opacity 500ms ease-in-out,transform 600ms ease-in-out}
+.hero-slide .hero-content>p,.hero-slide .hero-content>h1,.hero-slide .hero-content>.actions,.hero-slide .hero-bottom{opacity:0;transform:translateY(10px);transition:opacity 1100ms ease-in-out,transform 1200ms ease-in-out}
 .hero-slide.is-active .hero-content>p,.hero-slide.is-active .hero-content>h1,.hero-slide.is-active .hero-content>.actions,.hero-slide.is-active .hero-bottom{opacity:1;transform:translateY(0)}
-.hero-slide.is-active .hero-content>h1{transition-delay:70ms}.hero-slide.is-active .hero-summary{transition-delay:130ms}.hero-slide.is-active .actions{transition-delay:190ms}.hero-slide.is-active .hero-bottom{transition-delay:190ms}
+.hero-slide.is-active .hero-content>h1{transition-delay:120ms}.hero-slide.is-active .hero-summary{transition-delay:240ms}.hero-slide.is-active .actions{transition-delay:360ms}.hero-slide.is-active .hero-bottom{transition-delay:360ms}
 .hero-controls{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:2px;width:max-content;max-width:calc(100% - 32px);padding:4px 6px;border:0;background:transparent}
 .hero-controls button{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;min-height:44px;padding:0;border:0;border-radius:50%;background:transparent;color:#fff;transition:color 200ms ease-in-out,transform 200ms ease-in-out}
 .hero-controls button:hover{color:#ead5a4}.hero-controls button:focus-visible{outline:2px solid #f5d990;outline-offset:-3px}

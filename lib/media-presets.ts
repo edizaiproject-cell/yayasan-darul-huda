@@ -9,13 +9,15 @@ export const mediaPresets={
  logo:{...preset(1200,1200,'1:1',2,'gunakan latar transparan'),types:['image/png','image/webp']},
  poster:preset(1080,1350,'4:5'),qr:preset(1000,1000,'1:1',5,'gunakan gambar tajam'),
  article:preset(1200,0,''),document:{...preset(0,0,'',10),types:['application/pdf']},
+ newsCard:preset(1200,0,'',10,'Rekomendasi 1200 × 900 px (4:3) untuk memenuhi bingkai kartu. Gambar potret, persegi, dan lanskap tetap ditampilkan utuh tanpa dipotong; ruang kosong mengikuti rasio asli.'),
  officeDocument:{...preset(0,0,'',10),types:['application/pdf',...officeTypes]},
  proof:{...preset(0,0,'',5,'pertahankan seluruh bukti, tanpa crop'),types:[...imageTypes,'application/pdf']},
  library:{...preset(0,0,'',10,'rekomendasi mengikuti lokasi penggunaan'),types:[...imageTypes,'application/pdf',...officeTypes]}
 };
 export type MediaPurpose=keyof typeof mediaPresets;
-export function mediaHint(purpose:MediaPurpose){const p=mediaPresets[purpose];const formats=p.types.map(t=>({'image/jpeg':'JPG','image/png':'PNG','image/webp':'WebP','application/pdf':'PDF','application/msword':'DOC','application/vnd.openxmlformats-officedocument.wordprocessingml.document':'DOCX','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':'XLSX'}[t])).join(', ');return `${formats} • maks. ${p.maxMB} MB`+(p.width?purpose==='article'?' • Disarankan minimal 1200 px lebar':` • Disarankan ${p.width} × ${p.height} px${purpose==='hero'?'':` (${p.ratio})`}`:'')+(p.extra?` • ${p.extra}`:'');}
+export function mediaHint(purpose:MediaPurpose){const p=mediaPresets[purpose];const formats=p.types.map(t=>({'image/jpeg':'JPG','image/png':'PNG','image/webp':'WebP','application/pdf':'PDF','application/msword':'DOC','application/vnd.openxmlformats-officedocument.wordprocessingml.document':'DOCX','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':'XLSX'}[t])).join(', ');return `${formats} • maks. ${p.maxMB} MB`+(p.width?['article','newsCard'].includes(purpose)?' • Disarankan minimal 1200 px lebar':` • Disarankan ${p.width} × ${p.height} px${purpose==='hero'?'':` (${p.ratio})`}`:'')+(p.extra?` • ${p.extra}`:'');}
 export function mediaPurpose(module:string,key:string,type='image'):MediaPurpose{
+ if(module==='posts'&&key==='image')return 'newsCard';
  if(type==='document')return 'officeDocument';if(type==='file')return 'document';if(type==='privatefile')return 'proof';if(type==='photos')return 'gallery';
  if(/qr/i.test(key))return 'qr';if(/logo|favicon/i.test(key))return 'logo';
  if(/avatar|portrait|profile|speaker/i.test(key))return 'profile';if(/poster/i.test(key)||module==='agendas')return 'poster';

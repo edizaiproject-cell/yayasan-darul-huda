@@ -1,0 +1,23 @@
+.opening-splash{background:radial-gradient(ellipse at center,#fff 35%,#f7faf6 100%);transition:opacity 500ms ease}
+.opening-splash .opening-brand{--emblem-size:clamp(150px,24vw,210px);opacity:1;gap:24px;padding:24px;animation:none!important;will-change:auto;filter:none;transform:none}
+.opening-progress{width:calc(var(--emblem-size)*1.45);height:calc(var(--emblem-size)*1.45);position:relative;display:grid;place-items:center;flex-shrink:0}
+.opening-ring{position:absolute;inset:0;width:100%;height:100%;overflow:visible;transform:rotate(-90deg)}
+.opening-ring circle{fill:none;stroke-width:6;vector-effect:non-scaling-stroke}
+.opening-ring-track{stroke:rgba(15,107,79,.10)}
+.opening-ring-value{stroke-linecap:round;transition:stroke-dashoffset 80ms linear}
+.is-running .opening-ring{animation:dh-opening-ring 6s linear infinite}
+/* Two viewports onto the unchanged original: emblem and wordmark. */
+.opening-emblem{width:var(--emblem-size);height:var(--emblem-size);position:relative;overflow:hidden}
+.opening-emblem img{position:absolute;width:175%;max-width:none;height:auto;left:-37.5%;top:-14%;opacity:0}
+.is-running .opening-emblem img{animation:dh-opening-logo 650ms cubic-bezier(.22,1,.36,1) both}
+.opening-identity{position:relative;width:calc(var(--emblem-size)*1.5);height:calc(var(--emblem-size)*.40);overflow:hidden;opacity:0}
+.opening-identity img{position:absolute;width:125%;max-width:none;height:auto;left:-12.5%;top:-325%}
+.is-running .opening-identity{animation:dh-opening-name 600ms ease-out 320ms both}
+.opening-splash.is-exiting{opacity:0;pointer-events:none}
+.opening-splash.is-exiting .opening-ring{animation-play-state:paused}
+@keyframes dh-opening-ring{from{transform:rotate(-90deg)}to{transform:rotate(270deg)}}
+@keyframes dh-opening-logo{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+@keyframes dh-opening-name{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.opening-splash .opening-brand{--emblem-size:clamp(140px,42vw,175px);gap:20px}.opening-ring circle{stroke-width:5}}
+@media(max-height:500px){.opening-splash .opening-brand{--emblem-size:110px;gap:12px;padding:12px}.opening-sound{bottom:8px}}
+@media(prefers-reduced-motion:reduce){.opening-splash .opening-ring{animation:none;transform:rotate(-90deg)}.opening-splash .opening-emblem img,.opening-splash .opening-identity{animation:none;opacity:1;transform:none}.opening-ring-value{transition:stroke-dashoffset 150ms linear}}

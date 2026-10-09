@@ -1,0 +1,95 @@
+/* Motion only: preserve the existing grid, imagery, colors and content geometry. */
+.hero.hero-slider{
+ --hero-step:75ms;--hero-lead:150ms;--hero-enter:380ms;--hero-title-enter:460ms;
+ --hero-crossfade:650ms;--hero-rise:22px;--hero-left:-18px;--hero-drop:-14px;
+ --hero-ease:cubic-bezier(.22,1,.36,1);
+}
+.hero.hero-slider .hero-slide{transition:opacity var(--hero-crossfade) ease-in-out;isolation:isolate}
+.hero.hero-slider .hero-slide picture{z-index:0}
+.hero.hero-slider .hero-slide .hero-shade{z-index:1;pointer-events:none}
+.hero.hero-slider .hero-slide .hero-content{z-index:2}
+.hero.hero-slider .hero-slide:not(.is-active) .hero-content{visibility:hidden}
+.hero.hero-slider .hero-controls{z-index:4}
+.hero.hero-slider .hero-slide picture img{transform:scale(1.05);transition:none}
+.hero.hero-slider .hero-slide.is-active picture img{animation:dh-hero-zoom var(--hero-crossfade) var(--hero-ease) both}
+
+/* Each item owns its entrance; the actions container itself never moves. */
+.hero.hero-slider .hero-slide .hero-content>p,
+.hero.hero-slider .hero-slide .hero-content>h1,
+.hero.hero-slider .hero-slide .hero-content>.actions,
+.hero.hero-slider .hero-slide .hero-bottom{opacity:1;transform:none;transition:none}
+.hero.hero-slider .hero-slide.is-active .hero-content>.eyebrow{animation:dh-hero-down var(--hero-enter) var(--hero-ease) var(--hero-lead) both}
+.hero.hero-slider .hero-slide.is-active .hero-content>h1{animation:dh-hero-title var(--hero-title-enter) var(--hero-ease) calc(var(--hero-lead) + var(--hero-step)) both}
+.hero.hero-slider .hero-slide.is-active .hero-summary{animation:dh-hero-up var(--hero-enter) var(--hero-ease) calc(var(--hero-lead) + 2 * var(--hero-step)) both}
+.hero.hero-slider .hero-slide.is-active .actions>.button{animation:dh-hero-button var(--hero-enter) var(--hero-ease) calc(var(--hero-lead) + 3 * var(--hero-step)) backwards}
+.hero.hero-slider .hero-slide.is-active .actions>.button:nth-child(2){animation-delay:calc(var(--hero-lead) + 4 * var(--hero-step))}
+.hero.hero-slider .hero-content .button{transition:translate 220ms ease,box-shadow 220ms ease,filter 220ms ease}
+
+/* Hooks for information cards, when present; no new content or card layout. */
+.hero.hero-slider :is(.hero-info-card,.hero-bottom>*){--card-order:0;--card-float:5s;position:relative;z-index:3;transition:translate 240ms ease,box-shadow 240ms ease}
+.hero.hero-slider :is(.hero-info-card,.hero-bottom>*):nth-child(2){--card-order:1;--card-float:5.5s}
+.hero.hero-slider :is(.hero-info-card,.hero-bottom>*):nth-child(3){--card-order:2;--card-float:4.5s}
+.hero.hero-slider :is(.hero-info-card,.hero-bottom>*):nth-child(4){--card-order:3;--card-float:6s}
+.hero.hero-slider .is-active :is(.hero-info-card,.hero-bottom>*){
+ --card-delay:calc(var(--hero-lead) + (5 + var(--card-order)) * var(--hero-step));
+ animation:dh-hero-card var(--hero-enter) var(--hero-ease) var(--card-delay) backwards,
+ dh-hero-float var(--card-float) ease-in-out calc(var(--card-delay) + var(--hero-enter)) infinite;
+}
+.hero.hero-slider :is(.hero-info-card,.hero-bottom>*) svg{transition:scale 240ms ease}
+@media(hover:hover) and (pointer:fine){
+ .hero.hero-slider .hero-content .button:hover{translate:0 -3px;box-shadow:0 8px 22px #0003}
+ .hero.hero-slider :is(.hero-info-card,.hero-bottom>*):hover{translate:0 -5px;box-shadow:0 12px 28px #0003;animation-play-state:running,paused}
+ .hero.hero-slider :is(.hero-info-card,.hero-bottom>*):hover svg{scale:1.04}
+ .hero.hero-slider .hero-controls button:hover{transform:translateY(-2px)}
+}
+.hero.hero-slider .hero-content .button:active{translate:0 0;scale:.98}
+
+/* Do not spend the entrance behind the opening splash. Removal replays it. */
+html:not([data-opening-seen="true"]) .opening-content.is-covered .hero.hero-slider .is-active :is(picture img,.eyebrow,h1,.hero-summary,.actions>.button,.hero-info-card,.hero-bottom>*){animation:none}
+
+@keyframes dh-hero-down{from{opacity:0;transform:translateY(var(--hero-drop))}to{opacity:1;transform:translateY(0)}}
+@keyframes dh-hero-title{from{opacity:0;transform:translate(var(--hero-left),var(--hero-rise))}to{opacity:1;transform:translate(0,0)}}
+@keyframes dh-hero-up{from{opacity:0;transform:translateY(var(--hero-rise))}to{opacity:1;transform:translateY(0)}}
+@keyframes dh-hero-button{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes dh-hero-card{from{opacity:0;transform:translateY(var(--hero-rise)) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes dh-hero-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes dh-hero-zoom{from{transform:scale(1.05)}to{transform:scale(1)}}
+@keyframes dh-hero-fade{from{opacity:0}to{opacity:1}}
+@media(max-width:767px){
+ .hero.hero-slider{--hero-step:55ms;--hero-lead:100ms;--hero-enter:300ms;--hero-title-enter:350ms;--hero-crossfade:500ms;--hero-rise:16px;--hero-left:-13px;--hero-drop:-10px}
+}
+@media(prefers-reduced-motion:reduce){
+ .hero.hero-slider{--hero-step:0ms;--hero-lead:0ms;--hero-enter:180ms;--hero-title-enter:180ms;--hero-crossfade:180ms}
+ .hero.hero-slider .hero-slide picture img{animation:none!important;transform:none!important}
+ .hero.hero-slider .hero-slide.is-active :is(.hero-content>.eyebrow,.hero-content>h1,.hero-summary,.actions>.button,.hero-info-card,.hero-bottom>*){animation-name:dh-hero-fade;animation-duration:180ms;animation-delay:0ms;animation-iteration-count:1;transform:none}
+ .hero.hero-slider :is(.button,.hero-info-card,.hero-bottom>*,.hero-controls button,.hero-indicator span),
+ .hero.hero-slider :is(.hero-info-card,.hero-bottom>*) svg{transition:none;translate:none!important;scale:none!important;transform:none!important}
+}
+
+/* Image-only transition layers remain below the existing shade and content. */
+.hero.hero-slider .hero-transition{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.hero.hero-slider .hero-transition-piece{position:absolute;inset:0;animation:dh-old-fade var(--hero-crossfade) ease both}
+.hero.hero-slider .hero-transition-piece picture img{animation:none!important;transform:none}
+.hero.hero-slider[data-transition="panels"] .hero-transition-piece{clip-path:inset(0 calc(100% - (var(--piece) + 1) * 100% / var(--pieces)) 0 calc(var(--piece) * 100% / var(--pieces)));animation:dh-panel-out 440ms var(--hero-ease) calc(var(--piece) * 26ms) both}
+.hero.hero-slider[data-transition="split"] .hero-transition-piece{clip-path:inset(0 calc(50% - var(--piece) * 50%) 0 calc(var(--piece) * 50%));animation:dh-split-out var(--hero-crossfade) var(--hero-ease) both}
+.hero.hero-slider[data-transition="diagonal"] .is-active>picture{animation:dh-diagonal var(--hero-crossfade) var(--hero-ease) both}
+.hero.hero-slider[data-transition="diagonal"] .hero-transition{z-index:-1}
+.hero.hero-slider[data-transition="curtain"] .hero-transition-piece{animation:dh-curtain-old var(--hero-crossfade) ease both}
+.hero.hero-slider .hero-transition-curtain{position:absolute;inset:-10% -25%;background:linear-gradient(110deg,#0f6b4f,#2d9b68 65%,#d9a62e);border-radius:0 45% 45% 0;animation:dh-curtain var(--hero-crossfade) ease-in-out both}
+.hero.hero-slider[data-transition="fade"] .hero-slide picture img{animation:none;transform:none}
+.hero.hero-slider[data-transition="fade"] .hero-transition-piece{animation:dh-old-simple 500ms ease both}
+@keyframes dh-old-simple{from{opacity:1}to{opacity:0}}
+@keyframes dh-old-fade{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(1.025)}}
+@keyframes dh-panel-out{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(calc(var(--direction) * 14%))}}
+@keyframes dh-split-out{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(calc(var(--direction) * -52%))}}
+@keyframes dh-diagonal{from{clip-path:polygon(0 0,0 0,0 100%,0 100%)}to{clip-path:polygon(0 0,130% 0,100% 100%,0 100%)}}
+@keyframes dh-curtain-old{0%,35%{opacity:1}60%,100%{opacity:0}}
+@keyframes dh-curtain{0%{transform:translateX(-105%);opacity:0}40%{opacity:.92}100%{transform:translateX(105%);opacity:0}}
+@media(max-width:767px){
+ .hero.hero-slider[data-transition="panels"] .hero-transition-piece{animation-duration:330ms;animation-delay:calc(var(--piece) * 20ms)}
+ .hero.hero-slider .hero-transition-curtain{border-radius:0 25% 25% 0}
+}
+@media(prefers-reduced-motion:reduce){
+ .hero.hero-slider .hero-transition{display:none}
+ .hero.hero-slider .is-active>picture{animation:none!important;clip-path:none!important}
+}

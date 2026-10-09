@@ -1,0 +1,9 @@
+Audit 30 September 2026
+HTTP localhost:5173 identifies Gerakan Juara Peduli, source D:/Codex/donasi-laili (verified by server-rendered development source references).
+Stack: React 19, TypeScript, Vinext 0.0.50, Vite 8, npm/package-lock; Next App Router conventions.
+Backend: server actions, route handlers, Drizzle with Cloudflare D1, R2 media; cookie sessions, PBKDF2 hashing, database permissions and audit logs.
+UI: custom CSS, reusable buttons, cards, modal, pagination and responsive public/admin layouts. Existing modal lacks full focus trapping. Existing service worker skips HTML and API but caches other GET assets; it needs narrower allowlisting and an offline fallback.
+Reusable copied source: components/ui/button.tsx; lib/auth/crypto.ts; dependency and TypeScript configuration foundation. New layouts use the same React/App Router architecture. Old financial/payment, donor, affiliate and user records are not copied.
+Environment: original .env, .git, .wrangler, D1/R2 data, sessions and hosting configuration are untouched. Local Darul Huda port: 5174. Database and uploads created only in this workspace.
+Refactor plan: dedicated per-module SQLite tables and local media; permission-controlled REST route; CMS editors; document-grounded seeds; public pages; PWA cache allowlist; security/financial tests and production build.
+Word is factual source material. Drafting notes, missing-field requests, example news and fundraising examples are not verified public content. SD Al-Kuttab history says 2016, while legal founding date is 23 November 2015; preserve both contexts. WhatsApp is absent: the landline is not a WhatsApp number. No invented target amounts or donor transactions.

@@ -5,11 +5,11 @@ import {AdminIcon} from './admin-icons';
 
 const groups:[string,[string,string][]][]=[
  ['Konten',[['posts','Berita & Wawasan'],['post_categories','Kategori Berita'],['galleries','Album Galeri'],['library_items','Pustaka']]],
- ['Lembaga',[['pages','Profil & Halaman'],['education_units','Unit Pendidikan'],['program_highlights','Program Unggulan'],['academics','Akademik & Kurikulum'],['business_units','Usaha Ma’had']]],
+ ['Lembaga',[['pages','Profil & Halaman'],['education_units','Unit Pendidikan'],['program_highlights','Ilmu & Pengabdian'],['academics','Akademik & Kurikulum'],['business_units','Usaha Ma’had']]],
  ['Informasi',[['registrations','Pendaftaran'],['announcements','Pengumuman'],['agendas','Agenda'],['academic_calendars','Kalender Pendidikan']]],
  ['Donasi',[['donation_programs','Program Donasi'],['donation_transactions','Transaksi Donasi'],['donors','Daftar Donatur'],['donation_updates','Perkembangan Donasi'],['donation_accounts','Rekening Donasi']]],
  ['Tampilan',[['hero_slides','Hero Beranda'],['home_sections','Susunan Beranda'],['menu_items','Menu Navigasi'],['footer_links','Tautan Footer']]],
- ['Sistem',[['media','Media Library'],['site_settings','Pengaturan Website'],['users','Pengguna'],['roles','Hak Akses'],['audit','Audit Log'],['password','Ganti Kata Sandi']]]
+ ['Sistem',[['media','Media Library'],['site_settings','Pengaturan Website'],['document-settings','Dokumen & PDF'],['users','Pengguna'],['roles','Hak Akses'],['audit','Audit Log'],['password','Ganti Kata Sandi']]]
 ];
 export function UserAvatar({user}:{user:Record<string,any>}){return <span className="user-avatar">{user.avatar_url?<img src={user.avatar_url} alt={'Foto '+user.name}/>:<span aria-label={'Inisial '+user.name}>{String(user.name||'Admin').trim().split(/\s+/).slice(0,2).map(s=>s[0]).join('').toUpperCase()}</span>}</span>}
 

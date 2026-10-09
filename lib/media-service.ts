@@ -1,3 +1,4 @@
+import {matchesListSearch} from './list-search.ts';
 import {inspectOfficeDocument} from './office-document.ts';
 import {createHash,randomUUID} from 'node:crypto';
 import {readFileSync,existsSync,mkdirSync,writeFileSync,unlinkSync} from 'node:fs';
@@ -43,10 +44,17 @@ function mentions(value:unknown,url:string):boolean{if(typeof value==='string')r
 export function mediaUsage(row:any){const urls=urlsFor(row),uses:any[]=[];
  for(const [name,m] of Object.entries(modules))for(const r of db.prepare(`SELECT id,title,data,deleted_at FROM ${name}`).all() as any[])if(urls.some(url=>mentions(JSON.parse(r.data),url)))uses.push({module:name,title:r.title,label:m.title,archived:!!r.deleted_at,id:r.id});
  for(const r of db.prepare('SELECT transaction_id,snapshot FROM donation_receipts').all() as any[])if(urls.some(url=>mentions(JSON.parse(r.snapshot),url)))uses.push({module:'donation_transactions',title:'Arsip bukti penerimaan donasi',label:'Kwitansi',archived:true,id:r.transaction_id});
+ const settings=db.prepare('SELECT data FROM document_settings WHERE id=1').get() as any;if(settings&&urls.some(url=>mentions(JSON.parse(settings.data),url)))uses.push({module:'site_settings',title:'Kop, tanda tangan, dan stempel PDF',label:'Pengaturan Dokumen',archived:false,id:'document-settings'});
  return uses;
 }
-export async function listMedia(permissions:string[]){await indexMedia();const rows=db.prepare('SELECT * FROM media WHERE private=0 ORDER BY created_at DESC').all() as any[];const counts=new Map<string,number>();for(const r of rows)if(r.file_hash)counts.set(r.file_hash,(counts.get(r.file_hash)||0)+1);
- return rows.map(r=>({...r,protected:!r.url.startsWith('/uploads/'),duplicates:r.file_hash?(counts.get(r.file_hash)||1)-1:0,usage:mediaUsage(r).map(u=>permissions.includes(modules[u.module]?.permission)?u:{label:'Konten terlindungi',title:'Digunakan oleh modul lain',archived:u.archived}),usageCount:mediaUsage(r).length}));
+export async function listMedia(permissions:string[],query?:URLSearchParams){await indexMedia();const rows=db.prepare('SELECT * FROM media WHERE private=0 ORDER BY created_at DESC').all() as any[];const counts=new Map<string,number>();for(const r of rows)if(r.file_hash)counts.set(r.file_hash,(counts.get(r.file_hash)||0)+1);
+ const result=rows.map(r=>({...r,protected:!r.url.startsWith('/uploads/'),duplicates:r.file_hash?(counts.get(r.file_hash)||1)-1:0,usage:mediaUsage(r).map(u=>permissions.includes(modules[u.module]?.permission)?u:{label:'Konten terlindungi',title:'Digunakan oleh modul lain',archived:u.archived}),usageCount:mediaUsage(r).length}));
+ if(!query)return result;
+ const type=query.get('type')||'all',usage=query.get('usage')||'all',sort=query.get('sort')||'newest';
+ const filtered=result.filter(r=>(!query.get('hash')||r.file_hash===query.get('hash'))&&matchesListSearch(r,query.get('q')||'')&&(type==='all'||type==='image'&&r.mime.startsWith('image/')||type==='document'&&!r.mime.startsWith('image/')&&!r.mime.startsWith('video/')||type==='video'&&r.mime.startsWith('video/'))&&(usage==='all'||usage==='used'&&r.usageCount>0||usage==='unused'&&r.usageCount===0||usage==='duplicates'&&r.duplicates>0)).sort((a,b)=>sort==='name'?a.title.localeCompare(b.title):sort==='largest'?b.size-a.size:sort==='oldest'?a.created_at.localeCompare(b.created_at):b.created_at.localeCompare(a.created_at));
+ const count=filtered.length,page=Math.max(1,Math.min(Math.ceil(count/24)||1,Math.trunc(Number(query.get('page')))||1));
+ return {rows:query.get('hash')?filtered:filtered.slice((page-1)*24,page*24),count,page};
+
 }
 export function deleteMedia(id:string,actor:string){return atomic(()=>{const row=db.prepare('SELECT * FROM media WHERE id=? AND private=0').get(id) as any;if(!row)throw new Error('Media tidak ditemukan.');const uses=mediaUsage(row);if(uses.length)throw new Error(`Media digunakan di ${uses.length} tempat, termasuk arsip. Lihat penggunaan sebelum menghapus.`);if(!row.url.startsWith('/uploads/'))throw new Error('Aset bawaan website dilindungi.');if(existsSync(mediaPath(row.url)))unlinkSync(mediaPath(row.url));db.prepare('DELETE FROM media WHERE id=?').run(id);audit(actor,'delete','media',id);return {ok:true};});}
 function replaceReference(value:any,from:string,to:string):any{if(typeof value==='string'){if(value===from)return to;return value.split('src='+encodeURIComponent(from)).join('src='+encodeURIComponent(to)).split('"'+from+'"').join('"'+to+'"').split("'"+from+"'").join("'"+to+"'").split(from+'?').join(to+'?').split(from+'#').join(to+'#');}if(Array.isArray(value))return value.map(v=>replaceReference(v,from,to));if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,replaceReference(v,from,to)]));return value;}

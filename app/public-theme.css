@@ -114,7 +114,7 @@
 .public-website .profile-menu nav .selected .profile-menu-arrow{opacity:1;color:#eee0b4}
 .public-website .profile-menu-toggle{display:none}
 .public-website .profile-content{min-width:0;background:#fff;border:1px solid var(--public-border);border-radius:24px;padding:32px;box-shadow:0 10px 32px #153e3506}
-.public-website .profile-content .prose{max-width:70ch;margin:0 auto;color:#445c52;font-size:15px;line-height:1.95;overflow-wrap:anywhere}
+.public-website .profile-content .prose{width:100%;max-width:none;margin:0;color:#445c52;font-size:15px;line-height:1.95;overflow-wrap:anywhere}
 .public-website .profile-content .prose :is(h2,h3){color:var(--public-dark);line-height:1.35;margin-top:1.6em}
 .public-website .profile-content .prose p{margin:0 0 1.25em}
 .public-website .profile-content .prose :is(ul,ol){padding-left:22px}
@@ -162,3 +162,10 @@
 @media(prefers-reduced-motion:reduce){.public-website .footer-socials a{transition:none!important}}
 @media(min-width:768px){.public-website .managed-footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.public-website .footer-bottom>a{margin-right:64px}}
 @media(min-width:1200px){.public-website .managed-footer-grid{grid-template-columns:var(--footer-columns)}}
+
+/* Keep profile articles and related information aligned with their lead visual. */
+.public-website .profile-content > :is(.profile-visual,.profile-visual-placeholder,.prose,.fact-list,section,.gallery-grid,.actions){width:100%;max-width:none;min-width:0;margin-left:0;margin-right:0}
+.public-website :is(.profile-content,.business-profile) .prose{width:100%;max-width:none;margin-left:0;margin-right:0}
+.public-website :is(.profile-content,.business-profile) .prose p,.public-website .profile-content > section > p{ text-align:justify;text-align-last:start;text-justify:inter-word;hyphens:auto;overflow-wrap:break-word;word-break:normal;word-spacing:normal;line-height:1.9;margin:0 0 1.25em}
+.public-website :is(.profile-content,.business-profile) .prose table{display:block;width:100%;max-width:100%;overflow-x:auto}
+.public-website .profile-content > section{margin-top:26px}

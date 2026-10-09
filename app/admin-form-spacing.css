@@ -1,0 +1,56 @@
+/* Shared admin form rhythm. Public pages and iframe previews remain independent. */
+:is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog){
+ --form-pad:24px;--form-section-gap:24px;--form-field-gap:22px;
+ --form-label-gap:9px;--form-help-gap:8px;--form-title-gap:18px;
+}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(.panel,.appearance-panel,.card-focal-editor,fieldset){padding:var(--form-pad);min-width:0}
+body .admin-layout :is(.edit-form,.information-editor,.content-editor,.information-sections,.content-sections,.appearance-workspace){gap:var(--form-section-gap)}
+body .admin-layout .edit-form>.panel+ .panel{margin-top:var(--form-section-gap)}
+body .admin-layout .appearance-panel+.appearance-panel{margin-top:var(--form-section-gap);padding-top:var(--form-pad)}
+body .admin-layout :is(.information-section,.content-section)>summary{padding:20px var(--form-pad);gap:12px;line-height:1.6}
+body .admin-layout :is(.information-section-body,.content-section-body){padding:8px var(--form-pad) var(--form-pad)}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(.panel,.appearance-panel,.information-section-body,.content-section-body,fieldset)>:is(h2,h3,h4){margin:0 0 var(--form-title-gap);line-height:1.45;overflow-wrap:anywhere}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(.panel-heading,.appearance-settings>header){gap:16px;margin-bottom:var(--form-title-gap)}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) .form-grid{gap:var(--form-field-gap);align-items:start}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(.form-grid>*,.field){min-width:0}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) label{line-height:1.6;overflow-wrap:anywhere}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(label:has(>input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=hidden])),label:has(>select),label:has(>textarea)){display:grid;gap:var(--form-label-gap);align-content:start;margin:0}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) .field>label{display:block;margin:0 0 var(--form-label-gap)}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=color]):not([type=hidden]):not([type=submit]):not([type=button]),select,textarea){box-sizing:border-box;min-height:50px;padding:12px 17px;line-height:1.5;margin:0;min-width:0;max-width:100%;border-radius:9px;font-size:13px}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) select:not([multiple]){appearance:none;padding-right:44px!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23546e60' stroke-width='1.8'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-size:16px}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) textarea{min-height:112px;resize:vertical}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(input,select,textarea):disabled{color:#657568;background-color:#f2f5ef;opacity:1;cursor:not-allowed}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(.field,.form-grid,.appearance-panel,.media-field,.card-focal-editor)>:is(small,.information-helper,.validation-field-hint,.validation-field-error),body .admin-layout label>small{display:block;margin:var(--form-help-gap) 0 0;font-size:12px;line-height:1.65;font-weight:400;overflow-wrap:anywhere}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(.validation-field-hint,.information-helper){color:#687767}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) .validation-field-error{margin-top:var(--form-help-gap);line-height:1.65}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(.form-grid,.field)>[role=alert]{margin:var(--form-help-gap) 0 0;line-height:1.65}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(.information-toggle,.appearance-toggle,.permission-grid label,label:has(>input[type=radio])){gap:12px!important;line-height:1.65;align-items:center}
+body .admin-layout .information-toggle{padding:16px}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) input:is([type=checkbox],[type=radio]){flex-shrink:0;margin:0;vertical-align:middle}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(.appearance-tabs,[role=tablist]){gap:10px;margin:20px 0;padding:3px;max-width:100%;overflow-x:auto}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) [role=tab]{min-height:46px;padding:11px 16px;line-height:1.5}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) :is(.media-field,.proof-drop){padding:18px;gap:14px}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) .rich-content{padding:16px;line-height:1.8}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) .upload-button{padding:12px 16px;min-height:48px;line-height:1.5}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) fieldset{margin:0 0 var(--form-section-gap);display:flow-root}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) legend{float:left;width:100%;padding:0;margin:0 0 var(--form-title-gap);line-height:1.6}
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) legend+*{clear:both}
+body:has(.admin-layout) dialog:not(.appearance-preview-dialog){padding:var(--form-pad)}
+body:has(.admin-layout) dialog>header{gap:16px;margin-bottom:var(--form-title-gap)}
+body:has(.admin-layout) dialog> :is(h2,h3){margin:0 0 var(--form-title-gap);line-height:1.45}
+body .admin-layout :is(.validation-summary,.validation-status-bar){padding:16px 20px}
+body .admin-layout .form-actions{margin-top:20px;gap:14px;padding:16px 20px;flex-wrap:wrap}
+@media(max-width:767px){:is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog){--form-pad:18px;--form-section-gap:20px;--form-field-gap:20px;--form-title-gap:16px}body .admin-layout :is(.information-section,.content-section)>summary{padding:18px}body .admin-layout .media-field{padding:16px}body .admin-layout .form-actions{padding:16px}body .admin-layout .appearance-panel{padding:18px}}
+
+body .login-page form{display:grid;gap:22px}
+body .admin-layout :is(.media-helper,.content-hint,.academic-helper){white-space:normal;overflow-wrap:anywhere;line-height:1.65;margin:8px 0 14px;font-size:12px}
+body .admin-layout .content-editor-sections{gap:var(--form-section-gap)}
+body .admin-layout :is(.subject-detail-editor,.subject-selector){padding:var(--form-pad);min-width:0}
+body .admin-layout .subject-detail-editor>h3{margin:0 0 var(--form-title-gap)}
+
+body :is(.admin-layout,.login-page,body:has(.admin-layout) dialog,.admin-dialog) .field>input+select{margin-top:12px}
+body :is(.admin-layout,body:has(.admin-layout) dialog) label:has(>input[type=checkbox]):not(.information-toggle):not(.appearance-toggle){display:flex;gap:12px;align-items:center}
+
+body :is(.admin-layout,body:has(.admin-layout) dialog) .media-library>p[aria-live]{margin:8px 0 20px;line-height:1.65}
+body :is(.admin-layout,body:has(.admin-layout) dialog) :is(.form-section,.field-group){padding:var(--form-pad);margin-bottom:var(--form-section-gap);min-width:0}
+

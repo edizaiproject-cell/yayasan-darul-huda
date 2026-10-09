@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export function EducationBreadcrumb({title}:{title?:string}){return <nav className="breadcrumb" aria-label="Breadcrumb"><Link href="/">Beranda</Link> <span aria-hidden="true">›</span> <span>Pendidikan</span> <span aria-hidden="true">›</span> {title?<><Link href="/pendidikan">Unit Pendidikan</Link> <span aria-hidden="true">›</span> <span aria-current="page">{title}</span></>:<span aria-current="page">Unit Pendidikan</span>}</nav>}

@@ -17,10 +17,10 @@ test('setup hashes password, login creates HttpOnly isolated session',async()=>{
 });
 test('cross-origin changes and invalid credentials rejected',async()=>{assert.equal((await request('content/posts','POST',{title:'No'},cookie,'https://hostile.example')).status,403);assert.equal((await request('login','POST',{email:'admin@test.local',password:'wrong'})).status,400)});
 test('separate content tables CRUD, draft visibility, schedule and HTML sanitation',async()=>{
- const draft=d.saveRecord('posts',{title:'Draft',slug:'draft',body:'<p onclick="alert(1)">Hello</p><script>alert(1)</script><img src=x onerror=alert(1)><a href="javascript:alert(1)">x</a>'},'test');assert.doesNotMatch(draft.body,/onclick|onerror|<script|javascript:/);assert.equal(d.publicData().posts.length,0);
- d.saveRecord('posts',{...draft,status:'scheduled',publishAt:'2020-01-01T10:00'},'test');assert.equal(d.publicData().posts.length,1);
- d.saveRecord('posts',{...draft,status:'scheduled',publishAt:'2099-01-01T10:00'},'test');assert.equal(d.publicData().posts.length,0);
- for(const name of ['education_units','galleries','library_items','pages','academics','registrations','announcements','agendas','academic_calendars','business_units','hero_slides','home_sections','menu_items','footer_links']){const r=d.saveRecord(name,{title:'Test '+name,status:'published',...(name==='footer_links'?{url:'/kontak'}:{}),...(['agendas','academic_calendars'].includes(name)?{date:'2026-10-01',allDay:true}:{})},'test');assert.ok(d.records(name).some(x=>x.id===r.id));d.saveRecord(name,{...r,title:'Updated '+name},'test');d.deleteRecord(name,r.id,'test');assert.equal(d.records(name).length,0);}
+ const draft=d.saveRecord('posts',{image:'/media/image2.png',title:'Draft',slug:'draft',body:'<p onclick="alert(1)">Hello</p><script>alert(1)</script><img src=x onerror=alert(1)><a href="javascript:alert(1)">x</a>'},'test');assert.doesNotMatch(draft.body,/onclick|onerror|<script|javascript:/);assert.equal(d.publicData().posts.length,0);
+ d.saveRecord('posts',{image:'/media/image2.png',...draft,status:'scheduled',publishAt:'2020-01-01T10:00'},'test');assert.equal(d.publicData().posts.length,1);
+ d.saveRecord('posts',{image:'/media/image2.png',...draft,status:'scheduled',publishAt:'2099-01-01T10:00'},'test');assert.equal(d.publicData().posts.length,0);
+ for(const name of ['education_units','galleries','library_items','pages','academics','registrations','announcements','agendas','academic_calendars','business_units','hero_slides','home_sections','menu_items','footer_links']){const r=d.saveRecord(name,{title:'Test '+name,status:'published',showAll:false,image:'/media/image2.png',level:'SD',...(name==='footer_links'?{url:'/kontak'}:{}),...(['agendas','academic_calendars'].includes(name)?{date:'2026-10-01',allDay:true}:{})},'test');assert.ok(d.records(name).some(x=>x.id===r.id));d.saveRecord(name,{...r,title:'Updated '+name},'test');d.deleteRecord(name,r.id,'test');assert.equal(d.records(name).length,0);}
 });
 test('donation totals are valid transaction sums, correction reasons required',()=>{
  program=d.saveRecord('donation_programs',{title:'Test program',status:'active',target:100000},'test');
@@ -45,7 +45,7 @@ test('server permissions prohibit editor finance and user administration',async(
  assert.equal((await request('content/donation_transactions','GET',undefined,editorCookie)).status,403);
  assert.equal((await request('users','GET',undefined,editorCookie)).status,403);
  const body=await (await request('bootstrap','GET',undefined,editorCookie)).json();assert.ok(body.data.posts);assert.equal(body.data.donation_transactions,undefined);
- assert.equal((await request('content/posts','POST',{title:'Editor post',status:'published'},editorCookie)).status,200);
+ assert.equal((await request('content/posts','POST',{title:'Editor post',status:'published',image:'/media/image2.png'},editorCookie)).status,200);
 });
 test('upload detects MIME mismatch; public media delete respects references',async()=>{
  const bad=new FormData();bad.set('file',new File(['<script>evil</script>'],'x.png',{type:'image/png'}));assert.equal((await request('media','POST',bad)).status,400);
@@ -62,7 +62,7 @@ test('private donation proofs require finance permission and are never in media 
  const library=await (await request('media')).json();assert.ok(!library.some((r:any)=>r.id===proof.id));
  const {unlinkSync}=await import('node:fs');assert.match(proof.id,/^[a-f0-9-]{36}$/);unlinkSync(join('data/private',proof.id+'.png'));
 });
-test('future publication and invalid references stay out of public catalog',()=>{assert.throws(()=>d.saveRecord('posts',{title:'Unknown category',categoryId:'missing'},'test'),/Referensi/);assert.throws(()=>d.saveRecord('hero_slides',{title:'Bad URL',primaryUrl:'javascript:alert(1)'},'test'),/URL/);assert.throws(()=>d.saveRecord('agendas',{title:'Bad date',date:'not a date'},'test'),/Tanggal/)});
+test('future publication and invalid references stay out of public catalog',()=>{assert.throws(()=>d.saveRecord('posts',{image:'/media/image2.png',title:'Unknown category',categoryId:'missing'},'test'),/Referensi/);assert.throws(()=>d.saveRecord('hero_slides',{title:'Bad URL',primaryUrl:'javascript:alert(1)'},'test'),/URL/);assert.throws(()=>d.saveRecord('agendas',{title:'Bad date',date:'not a date'},'test'),/Tanggal/)});
 test('post publication permission cannot be bypassed with donation-only statuses',async()=>{d.db.prepare("DELETE FROM role_permissions WHERE role_id='Editor Berita' AND permission='posts.publish'").run();assert.equal((await request('content/posts','POST',{title:'No publish permission',status:'published'},editorCookie)).status,403);assert.equal((await request('content/posts','POST',{title:'Status bypass',status:'closed'},editorCookie)).status,400);assert.equal((await request('content/posts','POST',{title:'Draft allowed',status:'draft'},editorCookie)).status,200);});
 
 test('self profile is private, validated, and cannot escalate role or edit another account',async()=>{
@@ -159,7 +159,7 @@ test('donation account editor maintains existing program relations atomically wi
 test('donation update publishing date controls visibility while preserving program and documentation',()=>{
  const p=d.saveRecord('donation_programs',{title:'Perkembangan terjadwal',status:'active'},'test');
  const update=d.saveRecord('donation_updates',{title:'Tahap pertama',programId:p.id,summary:'Ringkasan tahap',status:'published',publishAt:'2099-01-01T10:00',document:'/media/contoh.pdf',progress:25},'test');
- assert.ok(!d.records('donation_updates').some(r=>r.id===update.id));d.saveRecord('donation_updates',{...update,publishAt:'2020-01-01T10:00'},'test');assert.equal(d.records('donation_updates').find(r=>r.id===update.id)?.document,'/media/contoh.pdf');assert.throws(()=>d.saveRecord('donation_updates',{title:'Tanpa program'},'test'),/Pilih program/);
+ assert.ok(!d.records('donation_updates').some(r=>r.id===update.id));d.saveRecord('donation_updates',{...update,publishAt:'2020-01-01T10:00'},'test');assert.equal(d.records('donation_updates').find(r=>r.id===update.id)?.document,'/media/contoh.pdf');assert.equal(d.saveRecord('donation_updates',{title:'Tanpa program',status:'draft'},'test').status,'draft');assert.throws(()=>d.saveRecord('donation_updates',{title:'Tanpa program',status:'published'},'test'),/Program donasi/);
 });
 // Remove only files registered in this isolated test database.
 test.after(async()=>{const {existsSync,unlinkSync}=await import('node:fs');const {resolve,sep}=await import('node:path');const root=resolve('public/uploads')+sep;for(const row of d.db.prepare('SELECT url FROM media WHERE private=0').all() as any[]){if(!/^\/uploads\/[a-f0-9-]{36}\.(png|jpg|webp|pdf)$/.test(row.url))continue;const path=resolve('public',row.url.slice(1));if(path.startsWith(root)&&existsSync(path))unlinkSync(path);}});

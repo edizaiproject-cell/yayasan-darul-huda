@@ -12,6 +12,18 @@ Akun awal: `admin@darulhuda.local`. Kata sandi development diberikan dalam perca
 
 ## Menjalankan
 
+### Otomatis setelah shutdown / restart Windows
+
+Pasang sekali untuk akun Windows yang sedang digunakan:
+
+```powershell
+.\scripts\install-local-startup.ps1
+```
+
+Shortcut **Darul Huda - Server Lokal** di folder Startup menjalankan server produksi di latar belakang setelah masuk Windows. Tidak memerlukan Apache/MySQL. Komputer harus menyala dan pengguna sudah masuk Windows untuk mengakses website lokal. Tunggu beberapa detik lalu buka http://localhost:5174/ atau http://localhost:5174/admin.
+
+Untuk menyalakan kembali secara manual, jalankan `node scripts/start-local.mjs`. Launcher tidak menjalankan server kedua bila port sudah digunakan. Log tersedia di `data/logs/local-server.log`. Setelah perubahan kode, jalankan `npm run build` sebelum menyalakan ulang server. Untuk menonaktifkan startup, buka `shell:startup` melalui Run Windows dan hapus hanya shortcut **Darul Huda - Server Lokal**. Perbarui instalasi startup jika folder proyek atau lokasi Node.js dipindahkan.
+
 Gunakan Node.js 24 atau lebih baru dan npm. Jalankan perintah dari folder proyek.
 
 ```powershell
@@ -191,3 +203,15 @@ Menu Informasi memakai dropdown desktop dan accordion mobile. Konfigurasi rute d
 - `/informasi/kalender`: kalender bulanan, filter kategori dan daftar tanggal penting; mendukung tanggal berulang dan rentang lintas bulan.
 
 Semua subhalaman memakai hasil `publicData()`, sehingga draft, pengumuman di luar periode tayang, dan kalender tanpa izin tampil publik tetap tersembunyi. Breadcrumb, status menu aktif, metadata dan sitemap mengikuti rute baru. Tautan pendaftaran di beranda langsung menuju subhalaman pendaftaran.
+
+## Laporan perkembangan donasi dinamis
+
+Program Donasi memiliki Jenis Program dan Pengaturan Laporan Perkembangan. Jenis menentukan indikator yang tampil; progres fisik hanya tersedia untuk Pembangunan / Fisik. Admin dapat menyembunyikan indikator, menetapkan kolom wajib, dan menambah field teks, teks panjang, angka, atau tanggal dengan satuan sendiri. Field yang disembunyikan tetap disimpan pada laporan lama.
+
+Program lama tanpa jenis memakai Umum tanpa menebak jenis dari kategori atau judul. Tidak ada penghapusan/migrasi destruktif: field lama tetap tersimpan, sedangkan indikator baru disimpan dalam reportValues dan konfigurasi program dalam reportSettings. Nilai progres lama akan tampil kembali bila jenis program diatur menjadi Pembangunan / Fisik.
+
+Dana terkumpul dan progres dana dihitung dari transaksi terverifikasi. Dana digunakan adalah penjumlahan nominal per laporan yang sudah dipublikasikan dan efektif (bukan draft, arsip, terjadwal di masa depan, atau terhapus). Sisa dana = dana terkumpul − dana digunakan. Masukkan nominal untuk kegiatan pada laporan tersebut, bukan total kumulatif; mengedit laporan mengganti nominalnya tanpa menggandakan perhitungan.
+
+Laporan kesehatan hanya mempublikasikan data agregat secara default. Cerita, judul pribadi, field tambahan, lokasi/fasilitas dan dokumentasi memerlukan pernyataan admin bahwa konten aman dan diizinkan untuk publik. Media Library adalah penyimpanan publik: jangan unggah data medis pribadi ke sana. Pembatasan tampilan ini tidak mengubah file publik menjadi file privat.
+
+Pengujian: tests/donation-progress.test.ts mencakup template, custom field, validasi kontekstual, kompatibilitas data lama, penjumlahan penggunaan, dan penyaringan data kesehatan.

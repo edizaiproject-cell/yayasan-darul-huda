@@ -46,3 +46,6 @@ console.log('Seeder selesai. Data yang sudah ada dipertahankan.');
 [['Al-Qur’an','Mencintai, menghafal, memahami, dan mengamalkan Al-Qur’an.'],['Ilmu & Bahasa','Memadukan ilmu keislaman, bahasa Arab, dan pendidikan umum.'],['Akhlak & Pengabdian','Membangun kemandirian, kepedulian sosial, serta semangat berdakwah.']].forEach(([title,summary],i)=>seed('program_highlights',title,{summary,sort_order:i}));
 
 seed('galleries','Unit Pendidikan Darul Huda',{category:'Unit Pendidikan',image:'/media/image4.jpeg',alt:'RTQ Darul Huda',summary:'Dokumentasi unit pendidikan dari profil Ma’had Al-Qur’an Darul Huda.',photos:units.map(([title,,,,,file])=>({url:'/media/'+file,caption:title}))},'unit-pendidikan-darul-huda');
+
+const {migrateProgramNavigation}=await import('../lib/program-navigation.ts');
+migrateProgramNavigation(db);

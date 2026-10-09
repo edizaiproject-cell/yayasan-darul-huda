@@ -10,7 +10,7 @@
     "build": "vinext build",
     "start": "node scripts/start.mjs",
     "setup": "node --env-file-if-exists=.env --experimental-strip-types scripts/setup.ts",
-    "test": "node --experimental-strip-types --test tests/core.test.ts tests/pwa.test.mjs tests/account-qr.test.ts tests/donation-identity.test.ts tests/payment-qr.test.ts tests/donation-categories.test.ts tests/donation-workflow.test.ts tests/donor-master.test.ts tests/account-usage.test.ts tests/dashboard.test.ts tests/media-library.test.ts tests/academics.test.ts tests/academic-editor.test.ts tests/information.test.ts tests/institution.test.ts tests/content-editor.test.ts tests/appearance.test.ts tests/admin-view.test.ts tests/public-search.test.ts tests/home-gallery.test.ts tests/education-navigation.test.ts tests/contact.test.ts",
+    "test": "node --experimental-strip-types --test tests/core.test.ts tests/donation-notice.test.ts tests/pwa.test.mjs tests/account-qr.test.ts tests/donation-identity.test.ts tests/payment-qr.test.ts tests/donation-categories.test.ts tests/donation-workflow.test.ts tests/donation-progress.test.ts tests/donation-list-ui.test.ts tests/pdf-documents.test.ts tests/donor-master.test.ts tests/account-usage.test.ts tests/dashboard.test.ts tests/media-library.test.ts tests/academics.test.ts tests/academic-editor.test.ts tests/information.test.ts tests/institution.test.ts tests/content-editor.test.ts tests/appearance.test.ts tests/admin-view.test.ts tests/public-search.test.ts tests/home-gallery.test.ts tests/education-navigation.test.ts tests/contact.test.ts tests/media-request.test.ts tests/programs.test.ts tests/admin-validation.test.ts tests/card-image.test.ts tests/list-search.test.ts tests/list-actions.test.ts tests/list-sort.test.ts tests/document-template.test.ts",
     "typecheck": "tsc --noEmit",
     "assets": "node scripts/assets.mjs",
     "test:production": "node --experimental-strip-types scripts/smoke-production.mjs",
@@ -21,15 +21,16 @@
     "exceljs": "^4.4.0",
     "fontkit": "^2.0.4",
     "jsqr": "^1.4.0",
+    "jszip": "3.10.2",
     "next": "^16.3.8",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.4.299",
     "pdfkit": "^0.20.2",
     "qrcode": "^1.5.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "sanitize-html": "^2.17.7",
-    "sharp": "^0.35.5",
-    "jszip": "3.10.2"
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@types/node": "22.19.19",

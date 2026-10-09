@@ -1,3 +1,11 @@
+import {donationNotices} from './donation-notice-server.ts';
+import {documentPreview} from './document-preview.ts';
+import {reorderList} from './list-reorder.ts';
+import {adminExport} from './admin-export.ts';
+import {deleteListRows} from './list-delete.ts';
+import {getDocumentSettings,saveDocumentSettings,pdfInstitution,documentProfile} from './document-settings.ts';
+import {pdfFilename,reportPeriod,disposition,pdfFailure} from './official-pdf.ts';
+import {adminList} from './admin-list-service.ts';
 import {isAppearance,appearanceDefaults,validateAppearanceCollection} from './appearance.ts';
 import {saveAppearanceBatch} from './database.ts';
 import {serveMediaImage} from './media-image.ts';
@@ -14,7 +22,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from '
 import { resolve, extname, basename } from 'node:path';
 import sharp from 'sharp';
 import { modules, allPermissions } from './modules.ts';
-import { db, records, publicData, identity, login, logout, saveRecord, deleteRecord, audit, createUser, changePassword, atomic, donationTotal } from './database.ts';
+import { db, records, publicData, identity, login, logout, saveRecord, deleteRecord, audit, createUser, changePassword, atomic, donationTotal, donationFinance } from './database.ts';
 const json=(body:any,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
 const cookie=(value:string,clear=false)=>`darul_huda_session=${value}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${clear?0:43200}${process.env.NODE_ENV==='production'?'; Secure':''}`;
 export async function handle(request:Request):Promise<Response>{
@@ -22,9 +30,10 @@ export async function handle(request:Request):Promise<Response>{
  const path=new URL(request.url).pathname.replace(/^\/api\//,'').split('/');
  const mutating=!['GET','HEAD'].includes(request.method);
  if(mutating){const origin=request.headers.get('origin');if(!origin||origin!==new URL(request.url).origin)return json({error:'Permintaan lintas situs ditolak.'},403);}
+ if(path[0]==='donation-notifications'&&request.method==='GET')return json(donationNotices());
  if(path[0]==='donation-submit'&&request.method==='POST')return json(await submitDonation(request),201);
- const download=(bytes:Buffer,name:string,mime='application/pdf')=>new Response(new Uint8Array(bytes),{headers:{'Content-Type':mime,'Content-Disposition':`attachment; filename="${name}"`,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','X-Robots-Tag':'noindex, nofollow'}});
- if(path[0]==='receipts'&&request.method==='GET'){const receipt=receiptByToken(path[1]);if(path[2]==='pdf')return download(await receiptPdf(receipt),`Kwitansi_Donasi_${receipt.receipt_number}.pdf`);const {transaction_code,bank,number,holder,verified_at,...publicReceipt}=receipt;return json(publicReceipt);}
+ const download=(bytes:Buffer,name:string,mime='application/pdf')=>new Response(new Uint8Array(bytes),{headers:{'Content-Type':mime,'Content-Disposition':mime==='application/pdf'?disposition(name,new URL(request.url).searchParams.get('view')==='1'):`attachment; filename="${name}"`,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','X-Robots-Tag':'noindex, nofollow'}});
+ if(path[0]==='receipts'&&request.method==='GET'){const receipt=receiptByToken(path[1]);if(path[2]==='pdf')return download(await receiptPdf(receipt,pdfInstitution()),pdfFilename('receipt',receipt.donor_name,receipt.date));const {transaction_code,bank,number,holder,verified_at,...publicReceipt}=receipt;return json(publicReceipt);}
  if(path[0]==='media-image'&&request.method==='GET')return serveMediaImage(new URL(request.url).searchParams);
  if(path[0]==='public'&&request.method==='GET')return json(publicData());
  if(path[0]==='login'&&request.method==='POST') {const b=await request.json();const token=await login(String(b.email||''),String(b.password||''),String(b.email||'').toLowerCase());return Response.json({ok:true},{headers:{'Set-Cookie':cookie(token),'Cache-Control':'no-store'}});}
@@ -57,10 +66,13 @@ export async function handle(request:Request):Promise<Response>{
  return json({error:'Metode tidak tersedia.'},405);
  }
  const allow=(p:string)=>{if(!actor.permissions.includes(p))throw Object.assign(new Error('Anda tidak memiliki hak akses untuk tindakan ini.'),{status:403});};
+ if(path[0]==='document-settings'){allow('settings.manage');if(request.method==='POST'&&path[1]==='preview'){const body=await request.text();if(body.length>100000)throw new Error('Pengaturan preview terlalu besar.');const b=JSON.parse(body);return download(await documentPreview(b.settings,b.kind),'Contoh-'+String(b.kind)+'.pdf');}if(request.method==='GET')return json({...getDocumentSettings(),profile:documentProfile()});if(request.method==='PUT')return json(saveDocumentSettings(await request.json(),actor.id));}
+ if(path[0]==='list-delete'&&request.method==='POST'){const name=path[1],permission=name==='users'?'users.manage':modules[name]?.permission;if(!permission)return json({error:'Modul tidak ditemukan.'},404);allow(permission);return json(deleteListRows(name,(await request.json()).ids,actor.id));}
  if(path[0]==='donation-options'&&request.method==='GET'){allow('donations.transaction');return json({programs:records('donation_programs',true).map(r=>({id:r.id,title:r.title,category:r.category})),accounts:records('donation_accounts',true).map(r=>({id:r.id,bank:r.bank,number:r.number}))});}
  if(path[0]==='donors'){
  allow('donations.transaction');const q=new URL(request.url).searchParams;
- if(request.method==='GET'&&path[1]==='export'){const data=donorQuery(q,true);audit(actor.id,'export','donors','',{format:q.get('format'),filters:data.labels});return q.get('format')==='xlsx'?download(await donorExcel(data),'Daftar_Donatur.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'):download(await donorReportPdf(data,records('site_settings',true)[0]||{}),'Daftar_Donatur.pdf');}
+ if(request.method==='POST'&&path[1]==='bulk-delete')return json(deleteListRows(path[0]==='donors'?'donors':'donation_transactions',(await request.json()).ids,actor.id));
+ if(request.method==='GET'&&path[1]==='export'){const data=donorQuery(q,true);audit(actor.id,'export','donors','',{format:q.get('format'),filters:data.labels});return q.get('format')==='xlsx'?download(await donorExcel(data),'Daftar_Donatur.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'):download(await donorReportPdf(data,pdfInstitution()),pdfFilename('donors',reportPeriod(q)));}
  if(request.method==='GET'&&path[1]==='lookup')return json(phoneOwner(q.get('phone')||'')||null);
  if(request.method==='GET')return json(path[1]?getDonor(path[1],q):donorQuery(q));
  if(request.method==='POST'&&path[2]==='merge'){const b=await request.json();return json(mergeDonors(path[1],String(b.target||''),actor.id));}
@@ -70,7 +82,13 @@ export async function handle(request:Request):Promise<Response>{
  }
  if(path[0]==='donations'){
   allow('donations.transaction');const q=new URL(request.url).searchParams;
-  if(request.method==='GET'&&path[1]==='export'){const data=donationQuery(q,true);if(q.get('format')==='xlsx')return download(await donationExcel(data),'Rekap_Donasi.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');return download(await donationReportPdf(data,records('site_settings',true)[0]||{}),'Rekap_Donasi.pdf');}
+ if(request.method==='POST'&&path[1]==='bulk-delete')return json(deleteListRows('donation_transactions',(await request.json()).ids,actor.id));
+  if(request.method==='GET'&&path[1]==='export'){const data=donationQuery(q,true);if(q.get('format')==='xlsx')return download(await donationExcel(data),'Rekap_Donasi.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');return download(await donationReportPdf(data,pdfInstitution(),q.get('document')==='transactions'?'transactions':'report'),pdfFilename('donations',reportPeriod(q)));}
+  if(request.method==='GET'&&path[1]&&path[2]==='pdf'){
+   const detail:any=getDonation(path[1]);if(!detail.receipt)throw Object.assign(new Error('Kuitansi belum tersedia. Verifikasi transaksi terlebih dahulu.'),{status:404});
+   const receipt=receiptByToken(detail.receipt.token),privateReceipt={...receipt,donor_name:detail.donor_name,donor_phone:detail.donor_phone,payment_method:detail.payment_method||detail.method,verified_name:detail.history.find((h:any)=>h.after==='valid')?.actor};
+   return download(await receiptPdf(privateReceipt,pdfInstitution()),pdfFilename('receipt',privateReceipt.donor_name,privateReceipt.date));
+  }
   if(request.method==='GET'&&!path[1])return json(donationQuery(q));
   if(path[1]&&request.method==='GET')return json(getDonation(path[1]));
   if(path[1]&&request.method==='POST')return json(verifyDonation(path[1],await request.json(),actor.id));
@@ -80,7 +98,7 @@ export async function handle(request:Request):Promise<Response>{
  // Reference labels only, so an editor can select a unit without gaining permission to edit it.
  const references:Record<string,any>={};const needed=new Set(Object.values(modules).filter(m=>actor.permissions.includes(m.permission)).flatMap(m=>m.fields.filter(f=>f.type?.startsWith('relation:')).map(f=>f.type!.split(':')[1])));for(const name of needed)references[name]=records(name,true).map(r=>({id:r.id,title:r.title,...(name==='donation_programs'?{category:r.category}:{})}));
  if(actor.permissions.includes('posts.manage'))references.content_authors=db.prepare('SELECT id,name AS title FROM users WHERE active=1 ORDER BY name').all();
- return json({data,references,appearanceData:actor.permissions.includes('appearance.manage')?publicData():undefined,dashboard:dashboardSummary(actor.permissions),donationSummary:actor.permissions.includes('donations.transaction')?donationQuery(new URLSearchParams()):undefined,donationQris:actor.permissions.includes('donations.manage')?records('site_settings',true)[0]?.donationQris||'':undefined,totals:actor.permissions.includes('donations.manage')?records('donation_programs',true).map(r=>({id:r.id,target:r.target,total:donationTotal(r.id)})):[],user:actor});
+ return json({data,references,appearanceData:actor.permissions.includes('appearance.manage')?publicData():undefined,dashboard:dashboardSummary(actor.permissions),donationSummary:actor.permissions.includes('donations.transaction')?donationQuery(new URLSearchParams()):undefined,donationQris:actor.permissions.includes('donations.manage')?records('site_settings',true)[0]?.donationQris||'':undefined,totals:actor.permissions.includes('donations.manage')?records('donation_programs',true).map(r=>({id:r.id,target:r.target,...donationFinance(r.id)})):[],user:actor});
  }
  if(path[0]==='payment-qr'&&request.method==='POST'){
  allow('donations.manage');
@@ -89,6 +107,9 @@ export async function handle(request:Request):Promise<Response>{
  const bytes=Buffer.from(await file.arrayBuffer());const result=await inspectPaymentQr(bytes,file.type);
  const stored=await storePublicMedia(file,actor.id);return json({...stored,...result});
  }
+ if(path[0]==='admin-export'&&request.method==='GET'){const name=path[1],permission=name==='users'?'users.manage':name==='audit'?'audit.read':modules[name]?.permission;if(!permission)return json({error:'Modul tidak ditemukan.'},404);allow(permission);const file=await adminExport(name,new URL(request.url).searchParams);audit(actor.id,'export',name,'');return download(file.bytes,file.title+'.'+file.ext,file.mime);}
+ if(path[0]==='list-reorder'&&request.method==='POST'){const name=path[1];if(!Object.hasOwn(modules,name))return json({error:'Modul tidak ditemukan.'},404);allow(modules[name].permission);if(name==='posts')allow('posts.publish');const b=await request.json();return json(reorderList(name,String(b.id||''),String(b.target||''),actor.id));}
+ if(path[0]==='admin-list'&&request.method==='GET'){const name=path[1],permission=name==='users'?'users.manage':name==='audit'?'audit.read':modules[name]?.permission;if(!permission)return json({error:'Modul tidak ditemukan.'},404);allow(permission);return json(adminList(name,new URL(request.url).searchParams));}
  if(path[0]==='content'){
  const name=path[1];if(!modules[name])return json({error:'Modul tidak ditemukan.'},404);allow(modules[name].permission);
  if(request.method==='GET')return json(records(name,true));
@@ -118,7 +139,7 @@ export async function handle(request:Request):Promise<Response>{
  }
  if(path[0]==='media'){
  if(request.method==='POST'){if(!actor.permissions.includes('media.manage'))allow('donations.transaction');}else allow('media.manage');
- if(request.method==='GET')return json(await listMedia(actor.permissions));
+ if(request.method==='GET'){const q=new URL(request.url).searchParams;return json(await listMedia(actor.permissions,q.has('page')?q:undefined));}
  if(request.method==='POST'&&path[1]==='merge'){allow('media.manage');const result=await mergeMedia((await request.json()).ids,actor.id);return json({...result,removed:cleanupMergedMedia()});}
  if(request.method==='PUT'){allow('media.manage');const title=String((await request.json()).title||'').trim().slice(0,180);if(!title)throw new Error('Nama media wajib diisi.');db.prepare('UPDATE media SET title=? WHERE id=? AND private=0').run(title,path[1]);audit(actor.id,'media.rename','media',path[1]);return json({ok:true});}
  if(request.method==='POST'){
@@ -142,7 +163,10 @@ export async function handle(request:Request):Promise<Response>{
  }
  }
  return json({error:'Endpoint tidak ditemukan.'},404);
- }catch(e:any){const message=String(e.message||'');const safe=e instanceof TypeError?'Data tidak valid. Periksa masukan dan coba kembali.':e.code&&!/SQLITE_CONSTRAINT/.test(e.code)?'Data gagal diproses. Silakan coba kembali.':/UNIQUE constraint/.test(message)?'Slug atau email sudah digunakan.':/FOREIGN KEY/.test(message)?'Referensi data tidak valid.':/SQLITE|ENOENT|Unexpected token|JSON/.test(message)?'Data gagal diproses. Periksa masukan dan coba kembali.':message;return json({error:safe||'Data gagal diproses.'},e.status||400);}
+ }catch(e:any){
+ const url=new URL(request.url),isPdf=url.pathname==='/api/document-settings/preview'||/^\/api\/(?:receipts|donations)\/[^/]+\/pdf$/.test(url.pathname)||(/^\/api\/(?:donations|donors)\/export$/.test(url.pathname)||/^\/api\/admin-export\/[^/]+$/.test(url.pathname))&&url.searchParams.get('format')!=='xlsx';
+ if(isPdf){const failure=pdfFailure(e);let admin=false;try{const user=identity(request);admin=!!user&&(user.permissions.includes('donations.transaction')||user.permissions.includes('settings.manage'))}catch{}console.error('[PDF]',failure.code,e);return json({error:'PDF belum dapat dibuat.',code:failure.code,details:admin?failure.details:'Dokumen belum dapat dibuat. Hubungi pengelola dengan kode '+failure.code+'.'},e.status||500);}
+ const message=String(e.message||'');const safe=e instanceof TypeError?'Data tidak valid. Periksa masukan dan coba kembali.':e.code&&!/SQLITE_CONSTRAINT/.test(e.code)?'Data gagal diproses. Silakan coba kembali.':/UNIQUE constraint/.test(message)?'Slug atau email sudah digunakan.':/FOREIGN KEY/.test(message)?'Referensi data tidak valid.':/SQLITE|ENOENT|Unexpected token|JSON/.test(message)?'Data gagal diproses. Periksa masukan dan coba kembali.':message;return json({error:safe||'Data gagal diproses.',...(Array.isArray(e.issues)?{issues:e.issues}:{})},e.status||400);}
 }
 
 

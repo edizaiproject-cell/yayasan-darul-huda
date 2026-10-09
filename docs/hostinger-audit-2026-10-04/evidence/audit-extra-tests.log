@@ -1,0 +1,20 @@
+✔ homepage selects five newest eligible posts without mutating source or honoring pinned order (1.0772ms)
+✔ excerpt falls back to body, removes markup and truncates safely (0.5474ms)
+✔ publication dates use Jakarta and tolerate missing legacy dates (13.0038ms)
+✔ reorder works in both directions without mutating stored input (1.7619ms)
+✔ nesting and root moves retain child identity and reject cycles and excessive depth (0.4838ms)
+✔ search matches parent names and retains ancestors for URL matches and filtered children (1.3858ms)
+✔ change count returns to zero after cancellation and tracks edits additions and deletions (0.2936ms)
+✔ progress follows audio.currentTime and actual duration; only ended reveals after 500ms (66.6934ms)
+✔ blocked autoplay uses metadata duration without trapping the user (20.0464ms)
+✔ failed audio uses three-second fallback and cleanup cancels scheduled work (13.0291ms)
+✔ a stalled recording falls back instead of covering the homepage forever (10.2065ms)
+✔ share destinations preserve the active URL, Indonesian title and reserved characters (1.399ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 381.988

@@ -80,14 +80,14 @@ export function validateInformation(name:string,r:Row){
  const fail=(s:string)=>{throw new Error(s)};
  if(r.date&&r.endDate&&r.endDate<r.date)fail('Tanggal selesai tidak boleh sebelum tanggal mulai.');
  if(name==='announcements'){
-  if(!r.untilRevoked&&!r.endsAt)fail('Isi waktu berakhir atau pilih tampilkan sampai dicabut.');
+  if(r.status!=='draft'&&!r.untilRevoked&&!r.endsAt)fail('Isi waktu berakhir atau pilih tampilkan sampai dicabut.');
   if(!r.untilRevoked&&r.startsAt&&r.endsAt&&informationInstant(r.endsAt)<=informationInstant(r.startsAt))fail('Waktu berakhir harus setelah mulai tampil.');
-  if(r.audience==='Unit tertentu'&&!r.unitId)fail('Pilih unit pendidikan yang dituju.');
+  if(r.status!=='draft'&&r.audience==='Unit tertentu'&&!r.unitId)fail('Pilih unit pendidikan yang dituju.');
  }
  if(['agendas','academic_calendars'].includes(name)){
   if(r.status==='published'&&!r.date)fail('Tanggal mulai wajib diisi sebelum diaktifkan.');
   for(const key of ['startTime','endTime'])if(r[key]&&!/^([01]\d|2[0-3]):[0-5]\d$/.test(r[key]))fail('Jam tidak valid.');
-  if(!r.allDay&&(!r.startTime||!r.endTime))fail('Isi jam mulai dan jam selesai, atau pilih sepanjang hari.');
+  if(r.status!=='draft'&&!r.allDay&&(!r.startTime||!r.endTime))fail('Isi jam mulai dan jam selesai, atau pilih sepanjang hari.');
   if(!r.allDay&&(r.endDate||r.date)===r.date&&r.endTime<=r.startTime)fail('Jam selesai harus setelah jam mulai.');
  }
  for(const key of ['registrationFee','programFee','capacity'])if(r[key]!=null&&(!Number.isSafeInteger(r[key])||r[key]<0))fail('Biaya dan batas peserta harus berupa angka bulat, tidak negatif.');

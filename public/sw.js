@@ -1,4 +1,4 @@
-const CACHE='darul-huda-public-v2';
+const CACHE='darul-huda-public-v3';
 const LOCAL_PREVIEW=['localhost','127.0.0.1','[::1]'].includes(new URL(self.location.origin).hostname);
 const SHELL=['/offline.html','/icons/icon-192.png','/icons/icon-512.png','/media/image1.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>LOCAL_PREVIEW?self.skipWaiting():undefined)));

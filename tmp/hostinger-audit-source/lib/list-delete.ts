@@ -1,0 +1,9 @@
+import {db,atomic,audit,deleteRecord} from './database.ts';
+import {modules} from './modules.ts';
+export function selectionIds(input:any):string[]{if(!Array.isArray(input)||!input.length||input.length>100||input.some(id=>typeof id!=='string'||!id||id.length>100))throw new Error('Pilih antara 1 dan 100 data.');return [...new Set(input)] as string[];}
+export function deleteListRows(name:string,input:any,actor:string){const ids=selectionIds(input);return atomic(()=>{const now=new Date().toISOString();for(const id of ids){
+ if(name==='donors'){const row=db.prepare('SELECT * FROM donors WHERE id=? AND deleted_at IS NULL AND merged_into IS NULL').get(id);if(!row)throw new Error('Donatur tidak ditemukan.');db.prepare('UPDATE donors SET deleted_at=?,updated_at=? WHERE id=?').run(now,now,id);audit(actor,'delete','donors',id,{before:row});}
+ else if(name==='donation_transactions'){const row=db.prepare('SELECT * FROM donation_transactions WHERE id=? AND deleted_at IS NULL').get(id);if(!row)throw new Error('Transaksi tidak ditemukan.');db.prepare('UPDATE donation_transactions SET deleted_at=?,updated_at=? WHERE id=?').run(now,now,id);audit(actor,'delete','donation_transactions',id,{before:row});}
+ else if(name==='users'){if(id===actor)throw new Error('Akun aktif sendiri tidak dapat dihapus.');const row=db.prepare('SELECT id,name,email,role_id FROM users WHERE id=?').get(id);if(!row)throw new Error('Pengguna tidak ditemukan.');db.prepare('UPDATE users SET active=0 WHERE id=?').run(id);db.prepare('DELETE FROM sessions WHERE user_id=?').run(id);db.prepare('INSERT OR REPLACE INTO deleted_users VALUES(?,?)').run(id,now);audit(actor,'delete','users',id,{before:row});}
+ else {if(!modules[name])throw new Error('Modul tidak ditemukan.');if(!db.prepare(`SELECT id FROM ${name} WHERE id=? AND deleted_at IS NULL`).get(id))throw new Error('Data tidak ditemukan.');deleteRecord(name,id,actor);}
+ }return {ok:true,count:ids.length};});}

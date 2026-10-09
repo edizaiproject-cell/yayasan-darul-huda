@@ -33,7 +33,7 @@ test('products persist separately, enforce ownership and preserve removed rows',
 test('visibility, curriculum reference and conditional CTA validation are effective',()=>{
  const unit=save('education_units',{title:'Hidden unit',status:'published',showWebsite:false});assert.ok(!d.publicData().education_units.some((r:any)=>r.id===unit.id));assert.ok(d.records('education_units',true).some(r=>r.id===unit.id));
  assert.throws(()=>save('education_units',{title:'Invalid relation',curriculumId:'missing'}),/Kurikulum/);
- assert.throws(()=>save('program_highlights',{title:'CTA',ctaType:'Daftar'}),/tujuan tombol/);
+ assert.equal(save('program_highlights',{title:'CTA draft',status:'draft',ctaType:'Daftar'}).status,'draft');assert.throws(()=>save('program_highlights',{title:'CTA',status:'published',ctaType:'Daftar'}),/Tujuan tombol/);
  assert.throws(()=>save('education_units',{title:'Count',studentCount:1.5}),/angka bulat/);
  const p=save('program_highlights',{title:'Unggulan utama',status:'published',primary:true});assert.equal(d.publicData().program_highlights[0].id,p.id);
 });

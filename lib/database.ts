@@ -1,3 +1,6 @@
+import {programType,normalizeReportSettings,normalizeReportValues,reportErrors,reportFinance,publicReport} from './donation-report-schema.ts';
+import {blockingIssues,ValidationFailure,fieldLocation} from './admin-validation.ts';
+import {migrateProgramNavigation} from './program-navigation.ts';
 import {validateContactSettings} from './contact.ts';
 import {visibleEducationMenu} from './education-navigation.ts';
 import {isAppearance,appearanceDefaults,validateAppearance,validateAppearanceCollection} from './appearance.ts';
@@ -32,6 +35,8 @@ CREATE TABLE IF NOT EXISTS permissions (code TEXT PRIMARY KEY);
 CREATE TABLE IF NOT EXISTS role_permissions (role_id TEXT REFERENCES roles(id),permission TEXT REFERENCES permissions(code),PRIMARY KEY(role_id,permission));
 CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY,email TEXT UNIQUE NOT NULL,name TEXT NOT NULL,password_hash TEXT NOT NULL,role_id TEXT REFERENCES roles(id),active INTEGER NOT NULL DEFAULT 1,must_change INTEGER DEFAULT 1,created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS sessions (token_hash TEXT PRIMARY KEY,user_id TEXT REFERENCES users(id),expires_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS deleted_users (id TEXT PRIMARY KEY REFERENCES users(id),deleted_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS document_settings (id INTEGER PRIMARY KEY CHECK(id=1),data TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS login_attempts (key TEXT PRIMARY KEY,count INTEGER NOT NULL,until_at INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS audit_logs (id INTEGER PRIMARY KEY AUTOINCREMENT,actor TEXT,action TEXT,entity TEXT,entity_id TEXT,details TEXT,created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS media (id TEXT PRIMARY KEY,title TEXT NOT NULL,url TEXT UNIQUE NOT NULL,mime TEXT NOT NULL,size INTEGER NOT NULL,private INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL);
@@ -45,36 +50,40 @@ for(const name of Object.keys(modules)) {
 db.prepare('INSERT OR IGNORE INTO schema_migrations VALUES (1,?)').run(new Date().toISOString());
 db.prepare('INSERT OR IGNORE INTO schema_migrations VALUES (2,?)').run(new Date().toISOString());
 initializeProducts(db);
+migrateProgramNavigation(db);
 migrateDonorNames(db); initializeDonationLedger(db); initializeDonors(db); migrateAccountUsage(db);
 let atomicDepth=0;
 export function atomic<T>(fn:()=>T):T {if(atomicDepth)return fn();db.exec('BEGIN IMMEDIATE');atomicDepth++;try {const result=fn();db.exec('COMMIT');return result;} catch(e){db.exec('ROLLBACK');throw e;}finally{atomicDepth--;}}
 export function audit(actor:string,action:string,entity:string,id:string,details:any={}){db.prepare('INSERT INTO audit_logs(actor,action,entity,entity_id,details,created_at) VALUES(?,?,?,?,?,?)').run(actor,action,entity,id,JSON.stringify(details),new Date().toISOString());}
 export function decode(r:any):RecordData {const {data,deleted_at,...base}=r;return {...JSON.parse(data),...base};}
-export function records(name:string,includeHidden=false):RecordData[]{
+export function records(name:string,includeHidden=false,ids?:string[]):RecordData[]{
  if(!modules[name]) throw new Error('Modul tidak ditemukan.');
- let rows=(db.prepare(`SELECT * FROM ${name} WHERE deleted_at IS NULL ORDER BY sort_order,created_at DESC`).all() as any[]).map(decode);
+ let rows=(db.prepare(`SELECT * FROM ${name} WHERE deleted_at IS NULL ${ids?'AND id IN ('+ids.map(()=>'?').join(',')+')':''} ORDER BY sort_order,created_at DESC`).all(...(ids||[])) as any[]).map(decode);
  if(name==='donation_accounts')rows=accountUsage(db,rows);
  if(informationSchema[name])rows=rows.map(r=>informationDefaults(name,r) as RecordData);
  if(isInstitution(name))rows=rows.map(r=>institutionDefaults(name,{...r,...(name==='business_units'?{products:productsFor(db,r.id)}:{})}) as RecordData);
  if(contentSchema[name])rows=rows.map(r=>contentDefaults(name,r) as RecordData);
  if(isAppearance(name))rows=rows.map(r=>appearanceDefaults(name,r) as RecordData);
  if(includeHidden) return rows;
+ if(['donation_accounts','donation_programs'].includes(name))rows=rows.filter(r=>!r.hidePublic);
  if(name==='hero_slides')rows=rows.filter(r=>r.showOnHome!==false).sort((a,b)=>Number(!!b.primary)-Number(!!a.primary)||a.sort_order-b.sort_order);
  if(contentSchema[name])rows=rows.filter(r=>r.showPublic!==false).sort((a,b)=>Number(!!b.pinned)-Number(!!a.pinned)||Number(!!b.featured)-Number(!!a.featured)||a.sort_order-b.sort_order);
  if(isInstitution(name))rows=rows.filter(r=>r.showWebsite!==false);
- if(name==='program_highlights')rows.sort((a,b)=>Number(!!b.primary)-Number(!!a.primary)||a.sort_order-b.sort_order);
+
  if(informationSchema[name])return rows.filter(r=>informationVisible(name,r));
  const now=Date.now();
  return rows.filter(r=>['published','active','completed','achieved','closed'].includes(r.status) && (!r.publishAt||Date.parse(r.publishAt)<=now)&&(!r.startsAt||Date.parse(r.startsAt)<=now)&&(!r.endsAt||Date.parse(r.endsAt)>now) || r.status==='scheduled'&&!!r.publishAt&&Date.parse(r.publishAt)<=now);
 }
 export function donationTotal(id:string):number {return Number((db.prepare("SELECT COALESCE(SUM(CAST(json_extract(data,'$.amount') AS INTEGER)),0) total FROM donation_transactions WHERE COALESCE(program_id,'')=? AND status='valid' AND deleted_at IS NULL").get(id) as any).total);}
+export function donationFinance(id:string){return reportFinance(donationTotal(id),records('donation_updates',true).filter(r=>r.programId===id));}
 export function publicData(){
  const result:Record<string,any>={};
  for(const [name,m] of Object.entries(modules)) if(m.public) result[name]=records(name);
  result.announcements=result.announcements.map((r:RecordData)=>({...r,unitTitle:result.education_units.find((u:RecordData)=>u.id===r.unitId)?.title||''})).sort((a:RecordData,b:RecordData)=>Number(!!b.pinned)-Number(!!a.pinned)||a.sort_order-b.sort_order);
  const calendar=result.academic_calendars;result.academic_calendars=calendar.filter((r:RecordData)=>r.showPublic);
  result.agendas=[...result.agendas,...calendar.filter((r:RecordData)=>r.showAgenda).map((r:RecordData)=>({...r,id:'calendar-'+r.id,calendarSource:true,showOnHome:false,mode:'Offline'}))];
- result.donation_programs=result.donation_programs.map((r:RecordData)=>({...r,total:donationTotal(r.id),percentage:r.target>0?Math.round(donationTotal(r.id)/r.target*1000)/10:null}));
+ result.donation_programs=result.donation_programs.map((r:RecordData)=>({...r,...donationFinance(r.id),percentage:r.target>0?Math.round(donationTotal(r.id)/r.target*1000)/10:null}));
+ result.donation_updates=result.donation_updates.filter((r:RecordData)=>result.donation_programs.some((p:RecordData)=>p.id===r.programId)).map((r:RecordData)=>publicReport(result.donation_programs.find((p:RecordData)=>p.id===r.programId)||{},r));
  result.academics=result.academics.map((r:RecordData)=>Array.isArray(r.subjects)?{...r,subjects:r.subjects.filter((s:any)=>s.active!==false),body:''}:r);
  result.library_items=result.library_items.map(publicLibrary);
  const hiddenPageLinks=new Set(result.pages.filter((r:RecordData)=>r.showMenu===false).map((r:RecordData)=>'/profil/'+r.slug));
@@ -95,21 +104,31 @@ export function saveRecord(name:string,input:any,actor:string):RecordData {
  if(informationSchema[name])input=informationDefaults(name,{...(old?decode(old):{}),...input});
  if(isInstitution(name))input=institutionDefaults(name,{...(old?decode(old):{}),...(name==='business_units'?{products:productsFor(db,id)}:{}),...input});
  if(isAppearance(name))input=appearanceDefaults(name,{...(old?decode(old):{}),...input});
+ if(['education_units','donation_programs'].includes(name)){const previous=old?JSON.parse(old.data):{};for(const key of ['image_position_x','image_position_y']){if(input[key]===undefined)input={...input,[key]:previous[key]??null};if(input[key]!=null&&input[key]!==''&&(!Number.isFinite(Number(input[key]))||Number(input[key])<0||Number(input[key])>100))fail('Posisi gambar harus antara 0 dan 100.');}}
+ if(['donation_programs','donation_updates'].includes(name)){
+ const previous:Record<string,any>=old?decode(old):{};input={...previous,...input};
+ if(name==='donation_programs'){input.programType=programType(input);input.reportSettings=normalizeReportSettings(input.reportSettings);if(input.programType==='custom'&&!String(input.customProgramType||'').trim())fail('Nama jenis program wajib diisi.');}
+ else {input.reportValues={...normalizeReportValues(previous.reportValues),...normalizeReportValues(input.reportValues)};input.date ||=previous.created_at?.slice(0,10)||new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'});const parent=records('donation_programs',true).find(r=>r.id===input.programId);if(input.programId&&!parent)fail('Program donasi tidak valid.');const issues=parent?reportErrors(parent,input):[];if(issues.length)throw new ValidationFailure(issues.map(i=>({...i,section:'Laporan perkembangan',severity:'error',technical:true})));}
+ }
  const previousProducts=name==='business_units'?productsFor(db,id):null;
- const productRows=name==='business_units'?validateProducts(db,id,input.products??productsFor(db,id)):null;
+
  if(contentSchema[name])input=contentDefaults(name,{...(old?decode(old):{}),...input});
+ const issues=blockingIssues(name,input);if(issues.length)throw new ValidationFailure(issues);
+ const productRows=name==='business_units'?validateProducts(db,id,input.products??productsFor(db,id)):null;
  const title=String(input.title||(name==='donation_accounts'?[input.bank,input.number].filter(Boolean).join(' • '):'')).trim().slice(0,200);if(!title)fail('Judul wajib diisi.');
  let status=String(input.status||'draft');
  const statuses=name==='donation_transactions'?['draft','pending','correction','rejected','valid','void']:name==='donation_programs'?['draft','active','completed','achieved','closed']:name==='posts'?['draft','published','scheduled','archived']:['draft','published','archived'];
  if(!statuses.includes(status))fail('Status tidak valid.');
  const data:Record<string,any>=(informationSchema[name]||isInstitution(name)||contentSchema[name]||isAppearance(name))&&old?{...JSON.parse(old.data)}:{};
- for(const field of m.fields){const value=input[field.key];
-  if(field.type==='academicSubjects'){const previous=old?JSON.parse(old.data):{};data[field.key]=validateAcademicSubjects(value===undefined?(previous.subjects??academicSubjects({...previous,...input,id,title},true)):value);for(const subject of data[field.key])if(subject.document&&!db.prepare("SELECT id FROM media WHERE url=? AND private=0 AND mime='application/pdf'").get(subject.document))fail('Dokumen mata pelajaran harus dipilih dari Media Library.');}
+ for(const field of m.fields){try{const value=input[field.key];
+  if(field.type==='reportSettings')data[field.key]=normalizeReportSettings(value);
+  else if(field.type==='reportValues')data[field.key]=normalizeReportValues(value);
+  else if(field.type==='academicSubjects'){const previous=old?JSON.parse(old.data):{};data[field.key]=validateAcademicSubjects(value===undefined?(previous.subjects??academicSubjects({...previous,...input,id,title},true)):value);for(const subject of data[field.key])if(subject.document&&!db.prepare("SELECT id FROM media WHERE url=? AND private=0 AND mime='application/pdf'").get(subject.document))fail('Dokumen mata pelajaran harus dipilih dari Media Library.');}
   else if(field.type==='photos'){if(!Array.isArray(value)){data[field.key]=[];continue;} if(value.length>100)fail('Maksimal 100 foto.');data[field.key]=value.map((p:any)=>({url:String(p.url||''),caption:String(p.caption||'').slice(0,500),alt:String(p.alt||'').slice(0,500)})); if(data[field.key].some((p:any)=>!/^\/(media|uploads)\/[\w.-]+$/.test(originalMediaUrl(p.url))||!/\.(png|jpe?g|webp)$/i.test(originalMediaUrl(p.url))))fail('Foto harus berasal dari media website.');}
   else if(field.type==='number'){data[field.key]=value===''||value==null?null:Number(value);if(data[field.key]!=null&&!Number.isFinite(data[field.key]))fail('Angka tidak valid.');}
   else if(field.type==='checkbox') data[field.key]=!!value;
   else {let s=String(value||'').trim();if(s.length>100000)fail('Konten terlalu panjang.');if(field.type==='richtext')s=cleanHtml(s);if((field.type==='url'||/Url$/.test(field.key)||field.key==='url')&&!urlSafe(s))fail('URL harus berupa HTTP, HTTPS, atau path lokal.');if(['image','file','document'].includes(field.type||'')&&s&&!/^\/(media|uploads)\/[\w.-]+$/.test(originalMediaUrl(s)))fail('Pilih berkas dari media website.');if(field.type==='privatefile'&&s&&!/^\/api\/private-media\/[\w.-]+$/.test(s))fail('Bukti harus menggunakan unggahan privat.');if(field.type==='select'&&s&&!field.options?.includes(s)&&!((name==='donation_programs'&&field.key==='category'||informationSchema[name]||isInstitution(name)||contentSchema[name])&&old&&JSON.parse(old.data)[field.key]===s))fail('Pilihan tidak valid.');if(field.key.toLowerCase().includes('whatsapp')&&field.key!=='whatsappMessage')s=normalizeWhatsapp(s);if(['image','file','document'].includes(field.type||'')&&s){const source=originalMediaUrl(s);if(field.type==='image'&&!/\.(png|jpe?g|webp)$/i.test(source)||field.type==='file'&&!/\.pdf$/i.test(source))fail('Format berkas tidak sesuai field.');const media=db.prepare('SELECT mime,size FROM media WHERE url=? AND private=0').get(source) as any;const previous=old?JSON.parse(old.data)[field.key]:'';if(field.type==='document'&&(!media||!/\.(pdf|doc|docx|xlsx)$/i.test(source)))fail('Pilih dokumen dari Media Library.');if(media&&s!==previous)validateMedia({type:media.mime,size:media.size},mediaPurpose(name,field.key,field.type));}data[field.key]=s;}
- }
+ }catch(error:any){throw new ValidationFailure([{field:field.key,label:field.label,section:fieldLocation(name,field.key),message:field.label+': '+error.message,severity:'error',technical:true}]);}}
  for(const f of m.fields){if(['date','datetime-local'].includes(f.type||'')&&data[f.key]&&!Number.isFinite(Date.parse(data[f.key])))fail('Tanggal tidak valid.');}
  if(informationSchema[name]){validateInformation(name,{...data,status});if(name==='announcements'&&data.unitId&&!db.prepare('SELECT id FROM education_units WHERE id=? AND deleted_at IS NULL').get(data.unitId))fail('Unit pendidikan tidak tersedia.');}
  if(isInstitution(name))validateInstitution(name,{...data,status});
@@ -121,8 +140,8 @@ export function saveRecord(name:string,input:any,actor:string):RecordData {
  if(name==='academics'){if(data.year.length>80)fail('Tahun kurikulum maksimal 80 karakter.');if(data.scheduleUrl&&!academicLink(data.scheduleUrl))fail('Tautan jadwal harus berupa HTTP, HTTPS, atau path lokal yang valid.');}
  if(name==='posts'&&status==='published'&&!data.publishAt)data.publishAt=new Date().toISOString();
  if(name==='donation_programs'&&data.target!=null&&(!Number.isSafeInteger(data.target)||data.target<0))fail('Target harus rupiah bulat dan tidak negatif.');
- if(name==='donation_updates'&&!data.programId)fail('Pilih program donasi untuk perkembangan ini.');
- if(name==='donation_updates'&&data.progress!=null&&(data.progress<0||data.progress>100))fail('Progres fisik harus 0 sampai 100.');
+ if(name==='donation_updates'&&status!=='draft'&&!data.programId)fail('Pilih program donasi untuk perkembangan ini.');
+
  if(status==='scheduled'&&!data.publishAt)fail('Tanggal publikasi wajib untuk penjadwalan.');
  if(name==='donation_transactions') {
 
@@ -138,7 +157,7 @@ export function saveRecord(name:string,input:any,actor:string):RecordData {
  if(name==='donation_accounts'){
   if(input.linkedPrograms!==undefined){if(!Array.isArray(input.linkedPrograms)||input.linkedPrograms.some((id:any)=>typeof id!=='string'||!db.prepare('SELECT id FROM donation_programs WHERE id=? AND deleted_at IS NULL').get(id)))fail('Program penggunaan rekening tidak valid.');}
   if((data.qr_title||'').length>150||(data.qr_merchant||'').length>150||(data.qr_description||'').length>500)fail('Judul dan merchant maksimal 150 karakter; keterangan maksimal 500 karakter.');
-  if(data.qr_enabled&&(!data.qr_type||!data.qr_image))fail('Pilih jenis dan unggah gambar QR sebelum menggunakan QR.');
+  if(status!=='draft'&&data.qr_enabled&&(!data.qr_type||!data.qr_image))fail('Pilih jenis dan unggah gambar QR sebelum menggunakan QR.');
   if(data.qr_image&&!db.prepare("SELECT id FROM media WHERE url=? AND private=0 AND mime IN ('image/png','image/jpeg','image/webp')").get(data.qr_image))fail('Pilih gambar QR yang sudah diunggah.');
   if(input.qr_primary&&(!hasPaymentQr(data)||data.qr_type!=='QRIS'||status!=='published'))fail('QRIS utama harus berupa QRIS aktif pada rekening terbit.');
  }
@@ -147,7 +166,7 @@ export function saveRecord(name:string,input:any,actor:string):RecordData {
  if((informationSchema[name]||isInstitution(name)||isAppearance(name))&&!old&&db.prepare(`SELECT id FROM ${name} WHERE slug=?`).get(slug))slug+='-'+id.slice(0,8);
  let sort=Number(input.sort_order||0); if(!Number.isSafeInteger(sort))fail('Urutan harus angka bulat.');
  const relationFields:Record<string,[string,string]>={donation_transactions:['program_id','programId'],donation_updates:['program_id','programId'],posts:['category_id','categoryId'],galleries:['unit_id','unitId'],donation_programs:['account_id','accountId']};
- const relation=relationFields[name]; const referenceTables:Record<string,string>={program_id:'donation_programs',category_id:'post_categories',unit_id:'education_units',account_id:'donation_accounts'};if(relation&&data[relation[1]]&&!db.prepare(`SELECT id FROM ${referenceTables[relation[0]]} WHERE id=? AND deleted_at IS NULL`).get(data[relation[1]]))fail('Referensi data tidak tersedia.'); const now=new Date().toISOString();
+ const relation=relationFields[name]; const referenceTables:Record<string,string>={program_id:'donation_programs',category_id:'post_categories',unit_id:'education_units',account_id:'donation_accounts'};if(relation&&data[relation[1]]&&!db.prepare(`SELECT id FROM ${referenceTables[relation[0]]} WHERE id=? AND deleted_at IS NULL`).get(data[relation[1]]))(()=>{const field=m.fields.find(f=>f.key===relation[1]);throw new ValidationFailure([{field:relation[1],label:field?.label||relation[1],section:fieldLocation(name,relation[1]),message:'Referensi '+(field?.label||relation[1])+' tidak tersedia. Pilih data yang masih aktif.',severity:'error',technical:true}]);})(); const now=new Date().toISOString();
  return atomic(()=>{
   if(name==='donation_transactions') {const previous=old?decode(old):null; const before=donationTotal(data.programId); const after=before-(previous?.status==='valid'?previous.amount:0)+(status==='valid'?data.amount:0);if(after<0)fail('Koreksi atau pembatalan membuat saldo program negatif.');}
   if(name==='donation_transactions'){prepareDonation(db,data,old,now);if(!old&&actor==='public'&&input.submission_key)data.submission_key=input.submission_key;}

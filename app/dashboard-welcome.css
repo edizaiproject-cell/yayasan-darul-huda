@@ -1,0 +1,32 @@
+/* Emerald welcome card: decorative geometry, no photography. */
+body .admin-layout .welcome-emerald{isolation:isolate;overflow:hidden;grid-template-columns:minmax(0,1.35fr) minmax(220px,.85fr);gap:24px;padding:38px 40px;border:1px solid #2f705e;border-radius:24px;background:radial-gradient(ellipse at 98% 8%,#529b7438,transparent 56%),linear-gradient(115deg,#103f35 0%,#125747 58%,#1d7058 100%);box-shadow:0 10px 30px #103f3512;color:#f5f8f0}
+.welcome-emerald:before{content:'';position:absolute;z-index:-1;width:470px;height:470px;right:-240px;top:-240px;border:1px solid #e4d3a32b;transform:rotate(45deg);box-shadow:0 0 0 25px #e4d3a308,0 0 0 55px #e4d3a308;pointer-events:none}
+.welcome-emerald:after{content:'';position:absolute;z-index:-1;inset:auto 25% -180px -110px;height:260px;border:1px solid #d9dfbc12;border-radius:50%;transform:rotate(-12deg);pointer-events:none}
+body .admin-layout .welcome-emerald .editorial-welcome-copy{padding:0;position:relative;z-index:1}
+body .admin-layout .welcome-emerald .admin-kicker{color:#e5d5a8;font-size:10px;letter-spacing:.14em;line-height:1.8;margin:0}
+body .admin-layout .welcome-emerald .admin-kicker>span{display:inline-block;width:6px;height:6px;border-radius:50%;background:#dbc58c;margin-right:7px;vertical-align:middle}
+body .admin-layout .welcome-emerald h2{color:#f9fbf4;font-size:clamp(29px,2.9vw,44px);line-height:1.2;letter-spacing:-.035em;margin:19px 0 18px;font-weight:720;text-wrap:balance}
+body .admin-layout .welcome-emerald h2 em{color:#e9dcb5;font-style:normal}
+body .admin-layout .welcome-emerald .editorial-welcome-copy>p:not(.admin-kicker){color:#d0e3d8;font-size:13px;line-height:1.85;max-width:460px}
+body .admin-layout .welcome-emerald .editorial-welcome-actions{margin-top:25px;gap:10px}
+body .admin-layout .welcome-emerald .editorial-welcome-actions .button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;font-size:12px;padding:10px 15px;border-radius:10px;border:1px solid #c9e1d64d;background:#ffffff0b;color:#f1f8f2;transition:background .18s,border-color .18s,transform .18s}
+body .admin-layout .welcome-emerald .editorial-welcome-actions .button--primary{background:#f1eddc;border-color:#f1eddc;color:#164c3c;box-shadow:0 2px 8px #092f2620}
+body .admin-layout .welcome-emerald .editorial-welcome-actions .button:hover{background:#ffffff19;border-color:#dfebde99;transform:translateY(-1px)}
+body .admin-layout .welcome-emerald .editorial-welcome-actions .button--primary:hover{background:#fff9e9;border-color:#fff9e9}
+body .admin-layout .welcome-emerald .editorial-welcome-actions .button:focus-visible{outline:3px solid #e8d498;outline-offset:4px}
+body .admin-layout .welcome-emerald .editorial-welcome-date{font-size:11px;color:#c2dacf;gap:8px;margin-top:24px;flex-wrap:wrap;line-height:1.6}
+body .admin-layout .welcome-emerald .editorial-welcome-date>span{display:inline;border-color:#b7d7c740;color:#c2dacf}
+.welcome-emblem{position:relative;min-width:0;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:300px;padding:0 0 10px}
+.welcome-mihrab{position:absolute;inset:0;width:100%;height:100%;color:#e7d5a2;opacity:.27;pointer-events:none}
+.welcome-identity{position:relative;text-align:center;padding-top:165px;color:#e7eddc}
+.welcome-identity>span{font-size:9px;letter-spacing:.22em}
+.welcome-identity>strong{display:block;font-size:23px;letter-spacing:.16em;margin-top:7px;font-weight:650;color:#f3e8c7}
+.welcome-identity>p{font-size:11px;line-height:1.8;margin:10px 0 18px;color:#c4dccd}
+.welcome-founded{position:relative;display:flex;align-items:center;gap:12px;padding:11px 18px;border:1px solid #d7ddb82e;border-radius:12px;background:#113e354d;box-shadow:0 4px 15px #082d1e10}
+.welcome-founded>svg{width:23px;height:23px;color:#e1ce99;flex-shrink:0}
+.welcome-founded strong{color:#f1e7c9;font-size:18px;line-height:1.3}
+.welcome-founded small{display:block;font-size:10px;color:#c4dccd;margin-top:2px}
+@media(max-width:1150px){body .admin-layout .welcome-emerald{padding:30px;grid-template-columns:minmax(0,1.4fr) minmax(200px,.8fr);gap:18px}body .admin-layout .welcome-emerald h2{font-size:32px}.welcome-identity>strong{font-size:20px}}
+@media(max-width:700px){body .admin-layout .welcome-emerald{grid-template-columns:minmax(0,1fr);padding:28px 24px;gap:22px;border-radius:20px}body .admin-layout .welcome-emerald h2{font-size:clamp(28px,6vw,36px)}body .admin-layout .welcome-emerald .admin-kicker{font-size:9px}.welcome-emblem{min-height:0;padding:18px 0 0;border-top:1px solid #c7dac225;flex-direction:row;justify-content:space-between;gap:14px}.welcome-mihrab{width:190px;height:190px;inset:auto -38px -35px auto;opacity:.13}.welcome-identity{padding:0;text-align:left}.welcome-identity>span{font-size:8px}.welcome-identity>strong{font-size:16px;letter-spacing:.1em}.welcome-identity>p{display:none}.welcome-founded{padding:9px 11px;gap:8px}.welcome-founded strong{font-size:16px}.welcome-founded small{font-size:9px}}
+@media(max-width:400px){body .admin-layout .welcome-emerald{padding:24px 20px}body .admin-layout .welcome-emerald .editorial-welcome-actions{gap:8px}body .admin-layout .welcome-emerald .editorial-welcome-actions .button{font-size:11px;padding:9px 11px}.welcome-emblem{flex-wrap:wrap}.welcome-founded{max-width:100%}}
+@media(prefers-reduced-motion:reduce){body .admin-layout .welcome-emerald .editorial-welcome-actions .button{transition:none;transform:none}}

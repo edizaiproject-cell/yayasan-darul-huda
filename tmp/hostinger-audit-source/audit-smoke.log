@@ -1,0 +1,5 @@
+
+> darul-huda@1.0.0 test:production
+> node --experimental-strip-types scripts/smoke-production.mjs
+
+PASS: production static assets, new uploads, Secure cookies, forced initial password change, private no-store, 404, PWA manifest.

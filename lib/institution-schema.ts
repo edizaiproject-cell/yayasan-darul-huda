@@ -1,3 +1,4 @@
+import {cardPositionFields} from './card-image.ts';
 import type {Field} from './modules.ts';
 type Row=Record<string,any>;
 const f=(key:string,label:string,type='text',options?:string[]):Field=>({key,label,type,options});
@@ -18,13 +19,15 @@ export const institutionSchema:Record<string,{title:string;description:string;se
   {title:'Media Unit',fields:[f('logo','Logo unit','image'),...media]},
   {title:'Status & Tampilan',fields:display}
  ]},
- program_highlights:{title:'Program Unggulan',description:'Jelaskan tujuan program, pelaksanaan, dan cara peserta bergabung.',sections:[
-  {title:'Informasi Program',fields:[f('title','Nama program'),f('category','Kategori program','select',['Tahfiz','Bahasa','Akademik','Keagamaan','Keterampilan','Kepemimpinan','Sosial','Lainnya']),f('summary','Ringkasan','textarea'),f('programStatus','Status program','select',['Akan datang','Berjalan','Selesai','Dihentikan'])]},
+ program_highlights:{title:'Ilmu & Pengabdian',description:'Jelaskan tujuan program, pelaksanaan, dan cara peserta bergabung.',sections:[
+  {title:'Informasi Program',fields:[f('title','Nama program'),f('category','Kategori program','select',['Tahfiz','Bahasa','Akademik','Keagamaan','Keterampilan','Kepemimpinan','Sosial','Lainnya']),f('summary','Ringkasan','textarea'),f('programStatus','Status program','select',['Direncanakan','Akan datang','Berjalan','Selesai','Dihentikan'])]},
+  {title:'Isi Program',fields:[f('body','Deskripsi / isi lengkap','richtext'),f('activities','Kegiatan & cakupan program','textarea')]},
+  {title:'SEO',fields:[f('seoTitle','SEO title'),f('seoDescription','Meta description','textarea')]},
   {title:'Tujuan & Manfaat',fields:[f('objectives','Tujuan program','textarea'),f('benefits','Manfaat','textarea'),f('audience','Sasaran peserta')]},
   {title:'Pelaksanaan Program',fields:[f('period','Periode'),f('schedule','Hari/jadwal'),f('location','Lokasi'),f('head','Penanggung jawab'),f('method','Metode pelaksanaan','select',['Tatap muka','Online','Hybrid']),f('requirements','Syarat mengikuti program','textarea')]},
   {title:'Media Program',fields:[...media,f('videoUrl','Link video (opsional)','url'),f('brochure','Brosur PDF (opsional)','file')]},
   {title:'Aksi / CTA',fields:[f('ctaType','Tombol tindakan','select',['Tanpa tombol','Daftar','Hubungi','Lihat detail','Link eksternal']),f('ctaUrl','Tautan tujuan','url'),f('whatsapp','WhatsApp untuk dihubungi','tel')]},
-  {title:'Status & Tampilan',fields:[f('status','Status tampilan','select',['draft','published','archived']),f('showOnHome','Tampilkan di beranda','checkbox'),f('primary','Program unggulan utama','checkbox'),f('sort_order','Urutan tampil','number')]}
+  {title:'Status & Tampilan',fields:[f('status','Status publikasi','select',['draft','published','archived']),f('showOnHome','Tampilkan di Dashboard','checkbox'),f('sort_order','Urutan tampil','number')]}
  ]},
  business_units:{title:'Usaha Ma’had',description:'Kelola profil usaha, produk atau layanan, serta cara pelanggan menghubungi Anda.',sections:[
   {title:'Informasi Usaha',fields:[f('title','Nama usaha'),f('kind','Jenis usaha','select',['Toko','Koperasi','Kantin','Percetakan','Jasa','Produk santri','Pertanian','Lainnya']),f('summary','Deskripsi singkat','textarea'),f('head','Penanggung jawab')]},
@@ -37,12 +40,12 @@ export const institutionSchema:Record<string,{title:string;description:string;se
 export const institutionLegacy:Record<string,Field[]>={
  pages:[],
  education_units:[f('body','Penjelasan tambahan','richtext'),f('npsn','NPSN / NSP'),f('accreditation','Akreditasi'),f('foundingDecree','SK pendirian'),f('operatingDecree','SK operasional'),f('accreditationDecree','SK akreditasi'),f('website','Website','url'),f('instagram','Instagram','url'),f('facebook','Facebook','url'),f('youtube','YouTube','url')],
- program_highlights:[f('body','Penjelasan program lama','richtext')],
+ program_highlights:[],
  business_units:[f('body','Penjelasan usaha lama','richtext'),f('website','Website','url'),f('instagram','Instagram','url'),f('facebook','Facebook','url'),f('youtube','YouTube','url')]
 };
 export const academicExtraFields=[f('effectiveYear','Tahun mulai berlaku','number'),f('syllabus','Silabus','document'),f('teachingDocument','RPS/RPP/modul','document'),f('objectives','Tujuan kurikulum','textarea'),f('characteristics','Karakteristik','textarea'),f('evaluation','Sistem evaluasi','textarea'),f('notes','Keterangan tambahan','textarea'),f('showWebsite','Tampilkan di halaman Akademik','checkbox')];
 export const isInstitution=(name:string)=>!!institutionSchema[name]||name==='academics';
-export const institutionFields=(name:string)=>[...institutionSchema[name].sections.flatMap(s=>s.fields).filter(f=>!['title','status','sort_order'].includes(f.key)),...institutionLegacy[name]];
+export const institutionFields=(name:string)=>[...institutionSchema[name].sections.flatMap(s=>s.fields).filter(f=>!['title','status','sort_order'].includes(f.key)),...institutionLegacy[name],...(name==='education_units'?cardPositionFields:[])];
 export function institutionDefaults(name:string,r:Row):Row{
  const defaults:Row={showWebsite:true,showOnHome:true};
  if(name==='pages'){defaults.kind='Lainnya';defaults.showMenu=true;defaults.showOnHome=r.slug==='tentang';}
@@ -53,5 +56,5 @@ export function institutionDefaults(name:string,r:Row):Row{
 export function validateInstitution(name:string,r:Row){
  for(const key of ['classCount','studentCount','effectiveYear'])if(r[key]!=null&&(!Number.isSafeInteger(r[key])||r[key]<0))throw new Error('Jumlah dan tahun harus angka bulat, tidak negatif.');
  if(r.effectiveYear!=null&&(r.effectiveYear<1000||r.effectiveYear>9999))throw new Error('Tahun mulai berlaku harus terdiri dari 4 digit.');
- if(name==='program_highlights'&&r.ctaType&&r.ctaType!=='Tanpa tombol'&&r.ctaType!=='Lihat detail'&&!r.ctaUrl&&!(r.ctaType==='Hubungi'&&r.whatsapp))throw new Error('Isi tujuan tombol atau nomor WhatsApp yang dihubungi.');
+ if(r.status!=='draft'&&name==='program_highlights'&&r.ctaType&&r.ctaType!=='Tanpa tombol'&&r.ctaType!=='Lihat detail'&&!r.ctaUrl&&!(r.ctaType==='Hubungi'&&r.whatsapp))throw new Error('Isi tujuan tombol atau nomor WhatsApp yang dihubungi.');
 }
